@@ -4,6 +4,7 @@
 
 #include <windows.h>
 
+// 可控的控制台
 class CConsole
 {
 	HANDLE m_ConsoleScreen;
@@ -17,6 +18,7 @@ public:
 	static CConsole& Instance(void);
 };
 
+// 单例模式
 inline CConsole& CConsoleInstance()
 {
 	return CConsole::Instance();

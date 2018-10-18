@@ -2,10 +2,12 @@
 
 #include "Console.h"
 
+// 创建控制台
 CConsole::CConsole(const char* title)
 {
 	try
 	{
+		// 注销OpenGL创建的控制台
 		::FreeConsole();
 		::AllocConsole();
 
