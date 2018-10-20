@@ -13,6 +13,7 @@ class CConsole
 public:
 	CConsole(const char* title = 0);
 
+	HWND GetHandle();
 	void Show(bool is_show);
 
 	static CConsole& Instance(void);

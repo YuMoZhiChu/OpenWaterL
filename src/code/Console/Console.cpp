@@ -22,13 +22,22 @@ CConsole::CConsole(const char* title)
 	}
 }
 
+HWND CConsole::GetHandle()
+{
+	if (m_Window) return m_Window;
+	static char buffer[256];
+	GetConsoleTitleA(buffer, 256);
+	m_Window = FindWindowA("ConsoleWindowClass", buffer);
+	return m_Window;
+}
+
 void CConsole::Show(bool is_show)
 {
 	if (is_show) {
-		::ShowWindow(m_Window, SW_SHOW);
+		::ShowWindow(GetHandle(), SW_SHOW);
 	}
 	else {
-		::ShowWindow(m_Window, SW_HIDE);
+		::ShowWindow(GetHandle(), SW_HIDE);
 	}
 }
 
