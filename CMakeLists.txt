@@ -3,7 +3,10 @@ cmake_policy(VERSION 2.8)
 
 project(OpenWaterL)
 
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+# for warning D9002
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
 
 # debug/release 环境设置
 set(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "add a postfix, usually d on windows")  
@@ -31,6 +34,10 @@ set(GLAD optimized glad debug "glad${CMAKE_DEBUG_POSTFIX}")
 set(LIBS ${GLFW3} ${GLAD} opengl32)
 message(STATUS, ${LIBS}, ${GLAD_SOURCE})
 
+# add spdlog
+set(SPDLOG_SOURCE "${CMAKE_SOURCE_DIR}/external/spdlog/")
+include_directories(${SPDLOG_SOURCE})
+
 file(GLOB_RECURSE CPPFILE
 	"src/code/*.cpp"
 )
@@ -49,6 +56,11 @@ message(STATUS, ${HEADFILE}, " 所有 H 文件")
 add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE})
 
 set(all_files ${HEADFILE} ${CPPFILE})
+
+# 添加 定义
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
 
 # 一个根据文件夹来进行分类的函数
 macro(source_group_by_dir source_files)
