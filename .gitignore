@@ -28,6 +28,7 @@ Thumbs.db
 [Bb]in
 [Dd]ebug/
 [Dd]ebug.win32/
+log/
 *.sbr
 *.sdf
 obj/
