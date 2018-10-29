@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include "../Core/CoreInclude.h"
 #include "../Console/Console.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -47,6 +48,7 @@ int main()
 	}
 
 	CConsoleInstance().Show(true);
+	Print(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
 
 	// render loop
 	// -----------
