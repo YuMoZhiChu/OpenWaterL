@@ -11,6 +11,8 @@
 #include "../Core/CoreInclude.h"
 #include "../Console/Console.h"
 
+#include "FBX\FBXImportWrap.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -20,6 +22,8 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
+	FBXTest();
+
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -49,6 +53,11 @@ int main()
 
 	CConsoleInstance().Show(true);
 	Print(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+	Print("\n");
+	Print(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
+	Print("\n");
+	Print(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+	Print("\n");
 
 	// render loop
 	// -----------

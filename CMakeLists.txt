@@ -3,6 +3,26 @@ cmake_policy(VERSION 2.8)
 
 project(OpenWaterL)
 
+# Build Debug Work Or Release Work
+# TODO: Use Python To Change This Param
+set(_OPENWATERL_PARAM_DEBUG 1)
+# set(_OPENWATERL_PARAM_DEBUG 0)
+
+if (${_OPENWATERL_PARAM_DEBUG})
+	message("#### _OPENWATERL_PARAM_DEBUG    $$$ General Debug Work")
+else (${_OPENWATERL_PARAM_DEBUG})
+	message("#### _OPENWATERL_PARAM_RELEASE  $$$ General Release Work")
+endif (${_OPENWATERL_PARAM_DEBUG})
+
+message("#### CMake Source Dir")
+message("${CMAKE_SOURCE_DIR}")
+# use 64 or 32
+if (${CMAKE_CL_64})
+	message("#### Use CL 64 bit")
+else (${CMAKE_CL_64})
+	message("#### Use CL 32 bit")
+endif (${CMAKE_CL_64})
+
 # for warning D9002
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -13,9 +33,17 @@ set(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "add a postfix, usually d on windows")
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windows")  
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/libs)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)  
+
+# set biuld path with debug or release
+if (${_OPENWATERL_PARAM_DEBUG})
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
+else (${_OPENWATERL_PARAM_DEBUG})
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
+endif (${_OPENWATERL_PARAM_DEBUG})
 
 link_directories(${LIBRARY_OUTPUT_PATH})
+message("#### OpenWaterL Build Libs path:")
+message("${LIBRARY_OUTPUT_PATH}")
 
 # first create relevant static libraries requried for other projects
 # add glfw lib
@@ -31,12 +59,41 @@ add_subdirectory(${GLAD_SOURCE} glad)
 include_directories(${GLAD_SOURCE}/include)
 set(GLAD optimized glad debug "glad${CMAKE_DEBUG_POSTFIX}")
 
-set(LIBS ${GLFW3} ${GLAD} opengl32)
-message(STATUS, ${LIBS}, ${GLAD_SOURCE})
+set(OPENGL_LIBS ${GLFW3} ${GLAD} opengl32)
+
+message("#### All OpenGL Libs:")
+message("${OPENGL_LIBS}")
+message("#### glad source:")
+message("${GLAD_SOURCE}")
 
 # add spdlog
 set(SPDLOG_SOURCE "${CMAKE_SOURCE_DIR}/external/spdlog/")
 include_directories(${SPDLOG_SOURCE})
+
+# add fbxsdk
+set(FBXSDK_SOURCE "${CMAKE_SOURCE_DIR}/external/fbx/include")
+include_directories(${FBXSDK_SOURCE})
+# fbx libs path
+if (${CMAKE_CL_64}) # if -A x64
+	if (${_OPENWATERL_PARAM_DEBUG})
+		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/debug")
+	else (${_OPENWATERL_PARAM_DEBUG})
+		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/release")
+	endif (${_OPENWATERL_PARAM_DEBUG})
+else (${CMAKE_CL_64}) # if -A x86
+	if (${_OPENWATERL_PARAM_DEBUG})
+		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/debug")
+	else (${_OPENWATERL_PARAM_DEBUG})
+		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/release")
+	endif (${_OPENWATERL_PARAM_DEBUG})
+endif (${CMAKE_CL_64})
+message("#### fbx libs path:")
+message("${FBX_LIBS_PATH}")
+link_directories(${FBX_LIBS_PATH})
+# fbx libs
+set(FBX_LIBS "libfbxsdk" "libfbxsdk-md" "libfbxsdk-mt")
+message("#### fbx libs:")
+message("${FBX_LIBS}")
 
 file(GLOB_RECURSE CPPFILE
 	"src/code/*.cpp"
@@ -51,8 +108,10 @@ file(GLOB_RECURSE MARKDOWNFILE
 	"doc/*.md"
 )
 
-message(STATUS, ${CPPFILE}, " 所有 CPP 文件")
-message(STATUS, ${HEADFILE}, " 所有 H 文件")
+message("#### all CPP files:")
+message("${CPPFILE}")
+message("#### all H files:")
+message("${HEADFILE}")
 add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE})
 
 set(all_files ${HEADFILE} ${CPPFILE})
@@ -80,10 +139,22 @@ macro(source_group_by_dir source_files)
 endmacro(source_group_by_dir)
 source_group_by_dir(all_files)
 
-message(STATUS, ${MARKDOWNFILE}, " 所有 md 文件")
+message("#### all md files:")
+message("${MARKDOWNFILE}")
 #设置 vs sln filter的接口
 source_group("_markdownDoc" FILES ${MARKDOWNFILE})
 
-target_link_libraries(OpenWaterL ${LIBS})
+# A "debug", "optimized", or "general" keyword indicates that the library immediately following 
+# it is to be used only for the corresponding build configuration.
+# Libraries specified as "debug" are appended to the the LINK_INTERFACE_LIBRARIES_DEBUG property 
+# Libraries specified as "optimized" are appended to the the LINK_INTERFACE_LIBRARIES property
+# Libraries specified as "general" (or without any keyword) are treated as if specified for both "debug" and "optimized"
+target_link_libraries(OpenWaterL ${OPENGL_LIBS})
+target_link_libraries(OpenWaterL ${FBX_LIBS})
+
 add_dependencies(OpenWaterL glfw)
 # add_dependencies(OpenWaterL glad)
+
+# copy dll to bin/Debug or bin/Release
+
+
