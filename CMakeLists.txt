@@ -123,6 +123,9 @@ message("#### all H files:")
 message("${HEADFILE}")
 add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE})
 
+# Make WorkDirectory and Set it
+set_target_properties(OpenWaterL PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/workspace")
+
 set(all_files ${HEADFILE} ${CPPFILE})
 
 # 添加 定义
