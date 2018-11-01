@@ -73,18 +73,27 @@ include_directories(${SPDLOG_SOURCE})
 # add fbxsdk
 set(FBXSDK_SOURCE "${CMAKE_SOURCE_DIR}/external/fbx/include")
 include_directories(${FBXSDK_SOURCE})
-# fbx libs path
+# fbx libs path and dll
+# copy fbx dll to ${PROJECT_SOURCE_DIR}/bin
+# use file(COPY) and not use configur_file
+# configure_file(<input> <output> COPYONLY)  .vs. file(COPY <input> DESTINATION <output>)
+# If the input file is modified the build system will re-run CMake to re-configure the file and generate the build system again.
+# but libfbxsdk.dll doesn't change
 if (${CMAKE_CL_64}) # if -A x64
 	if (${_OPENWATERL_PARAM_DEBUG})
 		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/debug")
+		file(COPY ${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/debug/libfbxsdk.dll DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
 	else (${_OPENWATERL_PARAM_DEBUG})
 		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/release")
+		file(COPY ${CMAKE_SOURCE_DIR}/external/fbx/lib/x64/release/libfbxsdk.dll DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
 	endif (${_OPENWATERL_PARAM_DEBUG})
 else (${CMAKE_CL_64}) # if -A x86
 	if (${_OPENWATERL_PARAM_DEBUG})
 		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/debug")
+		file(COPY ${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/debug/libfbxsdk.dll DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
 	else (${_OPENWATERL_PARAM_DEBUG})
 		set(FBX_LIBS_PATH "${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/release")
+		file(COPY ${CMAKE_SOURCE_DIR}/external/fbx/lib/x86/release/libfbxsdk.dll DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
 	endif (${_OPENWATERL_PARAM_DEBUG})
 endif (${CMAKE_CL_64})
 message("#### fbx libs path:")
@@ -121,7 +130,7 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-# 一个根据文件夹来进行分类的函数
+# 一个根据文件夹来进行分类的函数, 在windows vs 下有用
 macro(source_group_by_dir source_files)
     if(MSVC)
         set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
