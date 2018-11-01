@@ -1,6 +1,10 @@
 # Ignore thumbnails created by windows
 Thumbs.db
 
+# Ignore files by L, Special work
+glfw3/
+glad/
+
 # Ignore files build by Visual Studio
 *.obj
 *.exe
@@ -28,7 +32,7 @@ Thumbs.db
 [Bb]in
 [Dd]ebug/
 [Dd]ebug.win32/
-log/
+log/*.txt
 *.sbr
 *.sdf
 obj/
