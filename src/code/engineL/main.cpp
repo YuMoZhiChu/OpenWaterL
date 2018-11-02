@@ -11,7 +11,7 @@
 #include "../Core/CoreInclude.h"
 #include "../Console/Console.h"
 
-#include "FBX\FBXImportWrap.h"
+#include "FBX\FBXTest.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
