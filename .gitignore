@@ -181,3 +181,9 @@ cmake-build-*/
 .vs/OpenWaterL/v15/ipch/AutoPCH/5cb9f8df0fd71f50/TEST.ipch
 .vs/OpenWaterL/v15/Browse.VC.db
 .vs/OpenWaterL/v15/.suo
+
+# No Ignore lib in externel
+!external/fbx/lib/x86/debug
+!external/fbx/lib/x86/release
+!external/fbx/lib/x64/debug
+!external/fbx/lib/x64/release

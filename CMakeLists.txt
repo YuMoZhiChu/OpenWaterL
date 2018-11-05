@@ -100,7 +100,9 @@ message("#### fbx libs path:")
 message("${FBX_LIBS_PATH}")
 link_directories(${FBX_LIBS_PATH})
 # fbx libs
-set(FBX_LIBS "libfbxsdk" "libfbxsdk-md" "libfbxsdk-mt")
+# No Use libfbxsdk-md and libfbxsdk-mt if need find in  fbx sdk vs2015 version
+# set(FBX_LIBS "libfbxsdk" "libfbxsdk-md" "libfbxsdk-mt")
+set(FBX_LIBS "libfbxsdk")
 message("#### fbx libs:")
 message("${FBX_LIBS}")
 
