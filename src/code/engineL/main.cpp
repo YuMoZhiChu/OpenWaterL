@@ -8,10 +8,12 @@
 
 #include <iostream>
 
+#include "Task/task.h"
+
 #include "../Core/CoreInclude.h"
 #include "../Console/Console.h"
 
-#include "FBX\FBXTest.h"
+#include "FBX/FBXTest.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -23,6 +25,8 @@ const unsigned int SCR_HEIGHT = 600;
 int main()
 {
 	FBXTest();
+
+	CConsoleInstance().Show(true);
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -51,13 +55,8 @@ int main()
 		return -1;
 	}
 
-	CConsoleInstance().Show(true);
-	Print(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-	Print("\n");
-	Print(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
-	Print("\n");
-	Print(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
-	Print("\n");
+	// init IO Thread
+	CIOTaskManager::Initialize();
 
 	// render loop
 	// -----------
@@ -77,6 +76,10 @@ int main()
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();
+
+	// release io task
+	CIOTaskManager::Release();
+
 	return 0;
 }
 

@@ -120,9 +120,13 @@ file(GLOB_RECURSE MARKDOWNFILE
 )
 
 message("#### all CPP files:")
-message("${CPPFILE}")
+foreach(F ${CPPFILE})
+     message(${F})
+endforeach(F)
 message("#### all H files:")
-message("${HEADFILE}")
+foreach(F ${HEADFILE})
+     message(${F})
+endforeach(F)
 add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE})
 
 # Make WorkDirectory and Set it
@@ -154,7 +158,9 @@ endmacro(source_group_by_dir)
 source_group_by_dir(all_files)
 
 message("#### all md files:")
-message("${MARKDOWNFILE}")
+foreach(F ${MARKDOWNFILE})
+     message(${F})
+endforeach(F)
 #设置 vs sln filter的接口
 source_group("_markdownDoc" FILES ${MARKDOWNFILE})
 
