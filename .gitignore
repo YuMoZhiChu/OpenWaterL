@@ -173,3 +173,11 @@ tests/lua-tests/project/proj.tizen/res/
 build/
 # Ignore the CLion build folder, such as cmake-build-debug
 cmake-build-*/
+.vs/OpenWaterL/v15/Solution.VC.db-wal
+.vs/OpenWaterL/v15/Solution.VC.db-shm
+.vs/OpenWaterL/v15/Solution.VC.db
+.vs/OpenWaterL/v15/ipch/AutoPCH/f428ab9489002c1b/TEST.ipch
+.vs/OpenWaterL/v15/ipch/AutoPCH/994dceedcf750981/TEST.ipch
+.vs/OpenWaterL/v15/ipch/AutoPCH/5cb9f8df0fd71f50/TEST.ipch
+.vs/OpenWaterL/v15/Browse.VC.db
+.vs/OpenWaterL/v15/.suo
