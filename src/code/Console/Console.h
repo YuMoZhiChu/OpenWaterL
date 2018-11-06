@@ -2,8 +2,6 @@
 
 #include "../Core/CoreInclude.h"
 
-#include <windows.h>
-
 // 可控的控制台
 class CConsole
 {

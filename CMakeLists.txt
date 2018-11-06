@@ -173,8 +173,4 @@ target_link_libraries(OpenWaterL ${OPENGL_LIBS})
 target_link_libraries(OpenWaterL ${FBX_LIBS})
 
 add_dependencies(OpenWaterL glfw)
-# add_dependencies(OpenWaterL glad)
-
-# copy dll to bin/Debug or bin/Release
-
-
+# add_dependencies(OpenWaterL glad) # 依赖默认已有

@@ -1,7 +1,7 @@
-﻿#include "stdafx.h"
+﻿#include "../stdafx.h"
 #include "task.h"
 
-#include "../Core/CoreInclude.h"
+#include "../../Core/CoreInclude.h"
 
 //---------IO Task---------
 std::list<std::unique_ptr<CIOTask>> CIOTaskManager::s_TaskList;
