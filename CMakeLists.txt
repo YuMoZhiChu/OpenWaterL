@@ -119,6 +119,11 @@ file(GLOB_RECURSE MARKDOWNFILE
 	"doc/*.md"
 )
 
+# 接入 md 文件
+file(GLOB_RECURSE NOTE_MARKDOWNFILE
+	"note/*.md"
+)
+
 message("#### all CPP files:")
 foreach(F ${CPPFILE})
      message(${F})
@@ -127,7 +132,7 @@ message("#### all H files:")
 foreach(F ${HEADFILE})
      message(${F})
 endforeach(F)
-add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE})
+add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE} ${NOTE_MARKDOWNFILE})
 
 # Make WorkDirectory and Set it
 set_target_properties(OpenWaterL PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/workspace")
@@ -163,6 +168,12 @@ foreach(F ${MARKDOWNFILE})
 endforeach(F)
 #设置 vs sln filter的接口
 source_group("_markdownDoc" FILES ${MARKDOWNFILE})
+
+message("#### all note - md files:")
+foreach(F ${NOTE_MARKDOWNFILE})
+     message(${F})
+endforeach(F)
+source_group("_markdownNote" FILES ${NOTE_MARKDOWNFILE})
 
 # A "debug", "optimized", or "general" keyword indicates that the library immediately following 
 # it is to be used only for the corresponding build configuration.
