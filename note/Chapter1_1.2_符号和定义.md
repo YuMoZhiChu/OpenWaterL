@@ -169,7 +169,7 @@ Operator 8 clamps negative values to 0:  and operator 9 clamps values between 0 
 
 ![二次项系数](pic/1/二次项系数.png)
 
-![](http://latex.codecogs.com/gif.latex?a+b）
+![](http://latex.codecogs.com/gif.latex?a+b)
 
 
 
