@@ -169,7 +169,12 @@ Operator 8 clamps negative values to 0:  and operator 9 clamps values between 0 
 
 ![二次项系数](pic/1/二次项系数.png)
 
-$ f(x)=w^Tx+b $
+![](http://latex.codecogs.com/gif.latex?\\frac{\\partial J}{\\partial \\theta_k^{(j)}}=\\sum_{i:r(i,j)=1}{\\big((\\theta^{(j)})^Tx^{(i)}-y^{(i,j)}\\big)x_k^{(i)}}+\\lambda \\xtheta_k^{(j)})
+
+作者：Deep Reader
+链接：https://www.zhihu.com/question/26887527/answer/43166739
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
 
