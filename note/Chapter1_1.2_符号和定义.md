@@ -93,7 +93,83 @@ convenient:
 
 ![矩阵2](pic/1/矩阵2.png)
 
->* *
+>* A plane is denoted π : n · x + d = 0 and contains its mathematical formula, the
+plane normal n and the scalar d. The normal is a vector describing what direction
+the plane faces. More generally (e.g., for curved surfaces), a normal describes this
+direction for a particular point on the surface. For a plane the same normal happens
+to apply to all its points. π is the common mathematical notation for a plane. The
+plane π is said to divide the space into a positive half-space, where n · x + d > 0, and
+a negative half-space, where n · x+d < 0. All other points are said to lie in the plane.
+---
+平面的表示公式为， π : n · x + d = 0 ，其中 n 表示平面法线，还有常量 d。
+
+法线是一个描述平面朝向的向量。
+
+更广泛的说（比如，对于弯曲的表面），法线描述了在表面上确切一个点的朝向。
+
+对于平面而言，适用于所有点。
+
+π 是一个常见的用语描述平面的数学符号。
+
+π 会将空间分为2半，当 n · x + d > 0 时，为正半空间，反之亦然。其他的所有点则在平面上。
+
+>* A triangle can be defined by three points v0, v1, and v2 and is denoted by
+△v0v1v2.
+---
+一个有 v0，v1，v2三个点的三角形被记做 △v0v1v2
+
+>* Table 1.2 presents some additional mathematical operators and their notation.
+The dot, cross, determinant, and length operators are explained in our downloadable
+linear algebra appendix at realtimerendering.com. The transpose operator turns a
+column vector into a row vector and vice versa. Thus a column vector can be written
+in compressed form in a block of text as v = (vx vy vz)T . Operator 4, introduced
+in Graphics Gems IV [735], is a unary operator on a two-dimensional vector.
+---
+表1.2 记录了更多的数学运算符和他们的符号。
+
+点乘，叉乘，行列式，求模，都在数学附录里可以找到解释。
+
+转置符号能将一个列向量转换成一个行向量，反之亦然。
+
+因此一个列向量可以写成 v = (vx vy vz)T。
+
+操作4， 是一个对2维向量的 一元操作。
+
+![更多的数学符号](pic/1/更多的数学符号.png)
+
+>* Letting this operator work on a vector v = (vx vy)T gives a vector that is perpendicular to v,
+i.e., v⊥ = (−vy vx)T . We use |a| to denote the absolute value of the scalar a, while
+|A| means the determinant of the matrix A. Sometimes, we also use |A| = |a b c| =
+det(a, b, c), where a, b, and c are column vectors of the matrix A.
+---
+对 v(vx vy)T 进行一次 ⊥ 操作会得到一个与v垂直的向量， 比如： v⊥ = (−vy vx)T。
+
+我们用 |a| 来表示常数 a 的绝对值，用 |A| 来表示矩阵 A 的行列式。
+
+有时我们用 |A| = |a b c| = det(a, b, c)，当a，b，c是矩阵A的列向量时。
+
+>* Operators 8 and 9 are clamping operators, commonly used in shading calculations.
+Operator 8 clamps negative values to 0:  and operator 9 clamps values between 0 and 1:
+---
+操作符 8 和 9 是限制操作符，经常用于 shading 的计算。
+
+![限制到0](pic/1/限制到0.png)
+
+![限制到0 1](pic/1/限制到0-1.png)
+
+>* The tenth operator, factorial, is defined as shown below, and note that 0! = 1:
+---
+第10个操作符是阶乘，定义 0! = 1
+
+![阶乘](pic/1/阶乘.png)
+
+>* The eleventh operator, the binomial factor, is defined as shown in Equation 1.6:
+---
+第11个操作符是二次项系数，被如此定义
+
+![二次项系数](pic/1/二次项系数.png)
+
+$ f(x)=w^Tx+b $
 
 
 
