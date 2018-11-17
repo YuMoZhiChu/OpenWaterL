@@ -214,6 +214,275 @@ geometry processing stage. These are the rendering primitives, i.e., points, lin
 triangles, that might eventually end up on the screen (or whatever output device is
 being used). This is the most important task of the application stage.
 ---
+在应用阶段的末尾，要被渲染的几何体提供给 几何处理阶段。
+
+他们是渲染的基本单元，比如，点，线，三角形，最终都有可能出现在屏幕上。
+
+这是应用阶段的最重要任务。
+
+>* A consequence of the software-based implementation of this stage is that it is
+not divided into substages, as are the geometry processing, rasterization, and pixel
+processing stages.1 However, to increase performance, this stage is often executed
+in parallel on several processor cores. In CPU design, this is called a superscalar
+construction, since it is able to execute several processes at the same time in the same
+stage. Section 18.5 presents various methods for using multiple processor cores.
+---
+如果是软渲实现，这部分就不会分为 几何处理，光栅化，像素，。
+
+但为了提高性能，多个流水线可以并行。
+
+详细参考 18.5
+
+>* One process commonly implemented in this stage is collision detection. After a
+collision is detected between two objects, a response may be generated and sent back
+to the colliding objects, as well as to a force feedback device. The application stage
+is also the place to take care of input from other sources, such as the keyboard, the
+mouse, or a head-mounted display. Depending on this input, several different kinds of
+actions may be taken. Acceleration algorithms, such as particular culling algorithms
+(Chapter 19), are also implemented here, along with whatever else the rest of the
+pipeline cannot handle.
+---
+在这个阶段，通常实现的是 碰撞检测 这个功能。
+
+在检测到2个物体的碰撞后，可以生成响应，并把响应通知物体，以及一些物理控件。
+
+应用阶段同时会处理输入，比如鼠标，键盘，VR。
+
+根据输入，产生效果。
+
+加速算法（详见第19章），也在这里处理。
+
+## 2.3 Geometry Processing
+
+>* The geometry processing stage on the GPU is responsible for most of the per-triangle
+and per-vertex operations. This stage is further divided into the following functional
+stages: vertex shading, projection, clipping, and screen mapping (Figure 2.3).
+---
+几何处理阶段，在GPU中主要负责 三角形和顶点 的预处理操作。
+
+可以分为4个部分，顶点着色，投影，裁剪 以及 屏幕映射。
+
+![几何处理管线](pic/2/几何处理管线.png)
+
+### 2.3.1 Vertex Shading
+
+>* There are two main tasks of vertex shading, namely, to compute the position for a
+vertex and to evaluate whatever the programmer may like to have as vertex output
+data, such as a normal and texture coordinates. Traditionally much of the shade of
+an object was computed by applying lights to each vertex’s location and normal and
+storing only the resulting color at the vertex. These colors were then interpolated
+across the triangle. For this reason, this programmable vertex processing unit was
+named the vertex shader [1049]. With the advent of the modern GPU, along with some
+or all of the shading taking place per pixel, this vertex shading stage is more general
+and may not evaluate any shading equations at all, depending on the programmer’s
+intent. The vertex shader is now a more general unit dedicated to setting up the data
+associated with each vertex. As an example, the vertex shader can animate an object
+using the methods in Sections 4.4 and 4.5.
+---
+顶点着色器有 2 个主要的任务， 顾名思义，计算一个顶点的位置
+
+与求出任何在顶点输出阶段我们需要的值，比如 法线 和 纹理坐标。
+
+一般来说，会将通过灯光，点的位置，法线计算出的阴影存在 vertex 的颜色中。
+
+在三角形中，将这些值做插值。
+
+因此，被称为顶点着色器。
+
+对于现代的GPU，渲染是逐像素的，可能顶点着色器已经用不到渲染方程了（这还是取决于写程序的人）。
+
+现在而言，顶点着色器是一个更加通用的单元，专门处理每个顶点及相关的数据。
+
+在4.4和4.5 可以看到通过顶点着色器设置动画。
+
+>* We start by describing how the vertex position is computed, a set of coordinates
+that is always required. On its way to the screen, a model is transformed into several
+different spaces or coordinate systems. Originally, a model resides in its own model
+space, which simply means that it has not been transformed at all. Each model can
+be associated with a model transform so that it can be positioned and oriented. It
+is possible to have several model transforms associated with a single model. This
+allows several copies (called instances) of the same model to have different locations,
+orientations, and sizes in the same scene, without requiring replication of the basic
+geometry.
+---
+我们来谈谈顶点位置是如何计算的，首先，需要一组坐标。
+
+在绘制到屏幕上之前，一个模型会被转换到不同的空间和坐标系。
+
+最初，一个模型存储在自己的模型空间中，这说明它还没有经过变换。
+
+每个模型都会做一个 Model 变换，因此它有了位置和朝向。
+
+Model 变换可以有多个。
+
+这允许对于一个模型来说，可以有多份拷贝（称为实例），在一个场景中不同的位置，朝向，大小
+
+而且这不需要去拷贝基础的几何体信息（即点，线，三角形）
+
+>* It is the vertices and the normals of the model that are transformed by the model
+transform. The coordinates of an object are called model coordinates, and after the
+model transform has been applied to these coordinates, the model is said to be located
+in world coordinates or in world space. The world space is unique, and after the models
+have been transformed with their respective model transforms, all models exist in this
+same space.
+---
+模型的顶点和法线会经过 Model 变换。
+
+对应的坐标点由 模型坐标 变为 世界坐标。
+
+世界空间是唯一的。
+
+当模型经过各自的 Model 变换后，他们都会出现在世界空间中。
+
+>* As mentioned previously, only the models that the camera (or observer) sees are
+rendered. The camera has a location in world space and a direction, which are used to
+place and aim the camera. To facilitate projection and clipping, the camera and all the
+models are transformed with the view transform. The purpose of the view transform
+is to place the camera at the origin and aim it, to make it look in the direction of the
+negative z-axis, with the y-axis pointing upward and the x-axis pointing to the right.
+We use the −z-axis convention; some texts prefer looking down the +z-axis. The
+difference is mostly semantic, as transform between one and the other is simple. The
+actual position and direction after the view transform has been applied are dependent
+on the underlying application programming interface (API). The space thus delineated
+is called camera space, or more commonly, view space or eye space. An example of
+the way in which the view transform affects the camera and the models is shown in
+Figure 2.4. Both the model transform and the view transform may be implemented as
+4×4 matrices, which is the topic of Chapter 4. However, it is important to realize that
+the position and normal of a vertex can be computed in whatever way the programmer
+prefers.
+---
+就像之前提到的，只有被摄像机看到的模型才会被渲染。
+
+摄像机在世界空间中有一个位置和方向，方向用来描述摄像机的朝向。
+
+为了方便投影和裁剪，摄像机和所有的模型都做 View 变换。
+
+View 变换的目的是，将摄像机挪到原点，朝向 -z 轴，+y 为 up 向量，+x 为right向量。
+
+我们约定使用 -z 轴。
+
+有些地方会写 +z 轴，不过问题不大，2者之间的转换很简单。
+
+经过 View 变换的确定的位置和方向，依赖于 API。
+
+这个空间被称为摄像机空间，或者，视角空间。
+
+图2.4 阐述了， View 变换是怎么影响摄像机和模型的显示的。
+
+Model 变换 和 View 变换 都是 4x4 的矩阵，在第四章会详细谈到。
+
+但是，请意识到一点，一个顶点的位置和法线，可以按照程序想要的方式，来任意计算。
+
+![2.4](pic/2/2.4.png)
+
+>* Next, we describe the second type of output from vertex shading. To produce a
+realistic scene, it is not sufficient to render the shape and position of objects, but their
+appearance must be modeled as well. This description includes each object’s material,
+as well as the effect of any light sources shining on the object. Materials and lights can
+be modeled in any number of ways, from simple colors to elaborate representations of
+physical descriptions.
+---
+接下来，我们会描述 顶点着色的 第二类输出。
+
+为了产生实际的场景，仅仅是位置和形状是不够的，他们的表面也需要被建模。
+
+这些描述包括了材质，光照的效果。
+
+材质和光照可以用多种方式建模，从简单的颜色，到精心表现形式的物理描述。
+
+>* This operation of determining the effect of a light on a material is known as shading.
+It involves computing a shading equation at various points on the object. Typically,
+some of these computations are performed during geometry processing on a model’s
+vertices, and others may be performed during per-pixel processing. A variety of material
+data can be stored at each vertex, such as the point’s location, a normal, a color,
+or any other numerical information that is needed to evaluate the shading equation.
+Vertex shading results (which can be colors, vectors, texture coordinates, along with
+any other kind of shading data) are then sent to the rasterization and pixel processing
+stages to be interpolated and used to compute the shading of the surface.
+---
+决定一种光在一种材质上的效果叫做渲染。
+
+它涉及到了模型到各个点的渲染方程。
+
+通常情况下，一些计算是在几何处理阶段完成的，而另一些在像素处理阶段完成。
+
+每个顶点都能存下一系列的材质数据，就像点的位置，法线，和颜色一样，这些参数可能都会在渲染方程中用到。
+
+顶点作色的结果，会被送去光栅化阶段和像素处理阶段，去做插值和计算表面的内容。
+
+>* Vertex shading in the form of the GPU vertex shader is discussed in more depth
+throughout this book and most specifically in Chapters 3 and 5.
+---
+在第3章和第5章，能看到更具体的顶点着色相关的内容。
+
+>* As part of vertex shading, rendering systems perform projection and then clipping,
+which transforms the view volume into a unit cube with its extreme points at
+(−1,−1,−1) and (1, 1, 1). Different ranges defining the same volume can and are
+used, for example, 0 ≤ z ≤ 1. The unit cube is called the canonical view volume.
+Projection is done first, and on the GPU it is done by the vertex shader. There are
+two commonly used projection methods, namely orthographic (also called parallel )
+and perspective projection. See Figure 2.5. In truth, orthographic is just one type of
+parallel projection. Several others find use, particularly in the field of architecture,
+such as oblique and axonometric projections. The old arcade game Zaxxon is named
+from the latter.
+---
+作为顶点着色的一部分，渲染系统会做 投影 和 裁剪。
+
+会把view转化为从 (−1,−1,−1) 到 (1, 1, 1) 的单位正方体内。
+
+不同的范围定义了不同的视线体积。
+
+先会做投影，在GPU 上，通过 顶点着色器 完成。
+
+这里是 2 种常见的投影方式，称为正交投影和透视投影。如图 2.5.
+
+其他的几个用途，比如建筑学部分。
+
+![2.5](pic/2/2.5.png)
+
+>* Note that projection is expressed as a matrix (Section 4.7) and so it may sometimes
+be concatenated with the rest of the geometry transform.
+---
+在4.7中，投影被表示为矩阵，所以它有时可以和剩下的几何变换结合。
+
+>* The view volume of orthographic viewing is normally a rectangular box, and the
+orthographic projection transforms this view volume into the unit cube. The main
+characteristic of orthographic projection is that parallel lines remain parallel after the
+transform. This transformation is a combination of a translation and a scaling.
+---
+正交投影的视图体积是一个矩形框。
+
+>* The perspective projection is a bit more complex. In this type of projection, the
+farther away an object lies from the camera, the smaller it appears after projection.
+In addition, parallel lines may converge at the horizon. The perspective transform
+thus mimics the way we perceive objects’ size. Geometrically, the view volume, called
+a frustum, is a truncated pyramid with rectangular base. The frustum is transformed
+into the unit cube as well. Both orthographic and perspective transforms can be
+constructed with 4 × 4 matrices (Chapter 4), and after either transform, the models
+are said to be in clip coordinates. These are in fact homogeneous coordinates, discussed
+in Chapter 4, and so this occurs before division by w. The GPU’s vertex shader must
+always output coordinates of this type in order for the next functional stage, clipping,
+to work correctly.
+---
+透视投影会稍微复杂些。
+
+这种投影中，物体离摄像机越远，它表现得越小。
+
+另外，平行线可能会在地平线出汇聚。
+
+透视投影变换，是在模仿我们感知物体的方式。
+
+几何上，视线体积，被称为视椎体，是一个带有矩形底座的截头金字塔。
+
+视椎体也要被转换为单位正方形。
+
+2种变换都需要一个 4x4 的矩阵，经过变换后，模型就变成了裁剪坐标。
+
+这些实际上是其次坐标，在第四章中讨论，会被除以 w。
+
+GPU的顶点着色器必须输出
+
+
 
 
 
