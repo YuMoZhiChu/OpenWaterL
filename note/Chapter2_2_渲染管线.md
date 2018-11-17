@@ -480,7 +480,188 @@ to work correctly.
 
 这些实际上是其次坐标，在第四章中讨论，会被除以 w。
 
-GPU的顶点着色器必须输出
+GPU的顶点着色器必须输出坐标信息给下一个阶段。
+
+>* Although these matrices transform one volume into another, they are called projections
+because after display, the z-coordinate is not stored in the image generated but
+is stored in a z-buffer, described in Section 2.5. In this way, the models are projected
+from three to two dimensions.
+---
+最后，投影的 z-坐标 不会存在图片中，而是作为 z-buffer，以这种方式，模型从3维投影到2维。
+
+### 2.3.2 Optional Vertex Processing
+
+>* Every pipeline has the vertex processing just described. Once this processing is done,
+there are a few optional stages that can take place on the GPU, in this order: tessellation,
+geometry shading, and stream output. Their use depends both on the capabilities
+of the hardware—not all GPUs have them—and the desires of the programmer. They
+are independent of each other, and in general they are not commonly used. More will
+be said about each in Chapter 3.
+---
+每个管线都会有上述所说的顶点处理过程。
+
+一旦这个过程被完成，有一个可选择的流程会在GPU上发生。
+
+这个过程可以完成： 曲面细分，几何着色，流输出。
+
+他们取决于硬件能力（并不是所有的GPU可以完成），和程序员的想法。
+
+他们通常独立，而且不会经常使用，会在第三章描述。
+
+>* The first optional stage is tessellation. Imagine you have a bouncing ball object.
+If you represent it with a single set of triangles, you can run into problems with
+quality or performance. Your ball may look good from 5 meters away, but up close
+the individual triangles, especially along the silhouette, become visible. If you make
+the ball with more triangles to improve quality, you may waste considerable processing
+time and memory when the ball is far away and covers only a few pixels on the screen.
+With tessellation, a curved surface can be generated with an appropriate number of
+triangles.
+---
+第一个可选阶段就是 曲面细分。
+
+想象一下你有一个可以弹跳的球对象。
+
+如果你用一组三角形来表示它，你可能会碰到一些性能上的问题。
+
+你的球可以在5米远的时候看起来不错，但接近时，独立的一个个三角形，特别是沿着轮廓的部分，三角形会变得可见。
+
+如果你将球的面数提高，那你就可能浪费了许多性能，当球距离很远的时候，只在屏幕上是几个像素。
+
+通过 曲面细分，一个曲面 可以生成 近似个数的三角形。
+
+```
+这是写在管线里的 LOD 算法么？
+```
+
+>* We have talked a bit about triangles, but up to this point in the pipeline we have
+just processed vertices. These could be used to represent points, lines, triangles, or
+other objects. Vertices can be used to describe a curved surface, such as a ball. Such
+surfaces can be specified by a set of patches, and each patch is made of a set of vertices.
+The tessellation stage consists of a series of stages itself—hull shader, tessellator, and
+domain shader—that converts these sets of patch vertices into (normally) larger sets
+of vertices that are then used to make new sets of triangles. The camera for the scene
+can be used to determine how many triangles are generated: many when the patch is
+close, few when it is far away.
+---
+我们已经对三角形做了一些讨论，到目前为止，我们能获得在几何处理阶段过的顶点数据。
+
+这些能用来表示点，线，三角形等。
+
+顶点可以用来描述一个曲面，比如一个球。
+
+这样的曲面可以被一组贴片描述，每个 patch 都是一组顶点。
+
+曲面细分阶段包括了， hull 着色器，曲面细分单元，以及 域着色器，这是将 patch 的顶点组合转化为更大的 顶点几何。
+
+这样就可以生成新的三角形几何。
+
+对于场景而言，摄像机用于决定生成三角形的个数，近多远少。
+
+```
+这里写的应该是 曲面细分 阶段的实现方式，很可能是直接由 GPU 内部完成的，总之我品出的意思就是在
+GPU 上做 LOD，算法大概是，将曲面分为 多个 patch，用 patch 来生成衍生的 patch，做缩小面或者放大面的技巧。
+```
+[曲面细分的Wiki](https://www.khronos.org/opengl/wiki/Tessellation)
+
+
+>* The next optional stage is the geometry shader. This shader predates the tessellation
+shader and so is more commonly found on GPUs. It is like the tessellation shader
+in that it takes in primitives of various sorts and can produce new vertices. It is a
+much simpler stage in that this creation is limited in scope and the types of output
+primitives are much more limited. Geometry shaders have several uses, with one of
+the most popular being particle generation. Imagine simulating a fireworks explosion.
+Each fireball could be represented by a point, a single vertex. The geometry shader
+can take each point and turn it into a square (made of two triangles) that faces the
+viewer and covers several pixels, so providing a more convincing primitive for us to
+shade.
+---
+下一个可选阶段是 几何着色器。
+
+这个着色器在 曲面细分着色器 之前，在GPU上也很常见。
+
+它跟曲面细分着色着色器类似，它获取各种各样的渲染单元，并能生成新的顶点。
+
+它是一个更简单的阶段，因为在这个阶段的创造和输出的内容都会有限制。
+
+几何着色器有多种用途，最常见的就是粒子生成。
+
+想象一下烟花爆炸，每个火球就一个点，一个单独的顶点。
+
+几何着色器可以把一个点转化为一个正方体（2个三角形），面向照相机，并且包含了几个像素。
+
+这样就创造了更好看了粒子。
+
+>* The last optional stage is called stream output. This stage lets us use the GPU
+as a geometry engine. Instead of sending our processed vertices down the rest of the
+pipeline to be rendered to the screen, at this point we can optionally output these to
+an array for further processing. These data can be used by the CPU, or the GPU
+itself, in a later pass. This stage is typically used for particle simulations, such as our
+fireworks example.
+---
+最后一个可选阶段叫做 流输出。 这个阶段，我们可以把 GPU 当成一个几何引擎。
+
+相比发送我们处理好的顶点数据到下一个流程，在这里我们可以选择性的把这些数据输出到一个数组中，做进一步处理。
+
+这些数据可以存在 CPU，或者GPU中。
+
+这个阶段通常用来做粒子模拟，比如我们的烟花的粒子。
+
+```
+这个阶段是说，可以把这段数据，再传递回 CPU 做操作？
+```
+
+>* These three stages are performed in this order—tessellation, geometry shading,
+and stream output—and each is optional. Regardless of which (if any) options are
+used, if we continue down the pipeline we have a set of vertices with homogeneous
+coordinates that will be checked for whether the camera views them.
+---
+这三个阶段按照这个顺序： 曲面细分 - 几何着色 - 流输出。
+
+每个阶段都是可选的。
+
+无论哪个阶段会使用，如果我们进行管线，我们会得到一组 齐次的坐标数据（4元？）
+
+这些数据会被检查，摄像机是否能看见他们。
+
+```
+这意味着，加入其中一个阶段，我们会做一次点是否在摄像机的视椎体内的判断。
+```
+
+### 2.3.3 Clipping
+
+>* Only the primitives wholly or partially inside the view volume need to be passed on
+to the rasterization stage (and the subsequent pixel processing stage), which then
+draws them on the screen. A primitive that lies fully inside the view volume will
+be passed on to the next stage as is. Primitives entirely outside the view volume
+are not passed on further, since they are not rendered. It is the primitives that are
+partially inside the view volume that require clipping. For example, a line that has
+one vertex outside and one inside the view volume should be clipped against the view
+volume, so that the vertex that is outside is replaced by a new vertex that is located
+at the intersection between the line and the view volume. The use of a projection
+matrix means that the transformed primitives are clipped against the unit cube. The
+advantage of performing the view transformation and projection before clipping is that
+it makes the clipping problem consistent; primitives are always clipped against the
+unit cube.
+---
+只有在视椎体内的渲染单元（部分或者全部），会传递到光栅化阶段（以及之后像素处理阶段），然后渲染在平面上。
+
+完全在视椎体内的单元会被完整的传递到下一个阶段。
+
+完全不在的会被抛弃，因此他们也不会被渲染。
+
+部分在视椎体内的渲染单元就需要裁剪了。
+
+比如一条线AB，点A在视椎体内，点B在视椎体外，那它肯定要被裁剪了。
+
+而在外的顶点B，会被一个新的顶点替代，这个顶点是直线和视椎体的焦点。
+
+投影矩阵的使用，意味着被转换的几何单元已经被单位正方体裁剪。
+
+在裁剪之前使用坐标变化和投影就是为了方便。
+
+因为渲染单元往往在单位正方体内被裁剪
+
+
 
 
 
