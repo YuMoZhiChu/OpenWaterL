@@ -661,6 +661,86 @@ unit cube.
 
 因为渲染单元往往在单位正方体内被裁剪
 
+>* The clipping process is depicted in Figure 2.6. In addition to the six clipping
+planes of the view volume, the user can define additional clipping planes to visibly
+chop objects. An image showing this type of visualization, called sectioning, is shown
+in Figure 19.1 on page 818.
+---
+在图2.6中，你可以看到大致的裁剪流程。
+
+除了视体积的6个裁剪面，我们还可以自定义平面去裁剪物体，来确定他们的是否可见。
+
+这种展示可视化结果的图片，被称为切片。
+
+在818页的19.1图中有详细介绍。
+
+![2.6](pic/2/2.6.png)
+
+>* The clipping step uses the 4-value homogeneous coordinates produced by projection
+to perform clipping. Values do not normally interpolate linearly across a triangle
+in perspective space. The fourth coordinate is needed so that data are properly interpolated
+and clipped when a perspective projection is used. Finally, perspective division
+is performed, which places the resulting triangles’ positions into three-dimensional
+normalized device coordinates. As mentioned earlier, this view volume ranges from
+(−1,−1,−1) to (1, 1, 1). The last step in the geometry stage is to convert from this
+space to window coordinates.
+---
+裁剪阶段使用的是投影阶段得到的4元齐次坐标。
+
+值通常不会在透视空间中做三角形插值。
+
+需要使用第4个坐标值，去保证数据被正确的插值，并在透视投影中被裁剪。
+
+最后，透视除法被执行，将三角形的坐标放入 NDC 中。
+
+就是之前说的，(−1,−1,−1) 到 (1, 1, 1)。
+
+最后一个步骤就是把这个坐标转换为窗口坐标。
+
+### 2.3.4 Screen Mapping
+
+>* Only the (clipped) primitives inside the view volume are passed on to the screen mapping
+stage, and the coordinates are still three-dimensional when entering this stage.
+The x- and y-coordinates of each primitive are transformed to form screen coordinates.
+Screen coordinates together with the z-coordinates are also called window coordinates.
+Assume that the scene should be rendered into a window with the minimum corner
+at (x1, y1) and the maximum corner at (x2, y2), where x1 < x2 and y1 < y2. Then the
+screen mapping is a translation followed by a scaling operation. The new x- and ycoordinates
+are said to be screen coordinates. The z-coordinate ([−1,+1] for OpenGL
+and [0, 1] for DirectX) is also mapped to [z1, z2], with z1 = 0 and z2 = 1 as the default
+values. These can be changed with the API, however. The window coordinates along
+with this remapped z-value are passed on to the rasterizer stage. The screen mapping
+process is depicted in Figure 2.7.
+---
+只有被裁剪的仍在视体积内的单元会被传递到屏幕映射阶段，这时候，这些坐标依然是3位的。
+
+x，y被称为屏幕坐标。
+
+屏幕坐标 + z 被称为窗口坐标。
+
+假设场景要渲染一个从 (x1, y1) 到 (x2, y2) 的窗口。
+
+那么屏幕映射，还要做一次缩放。
+
+新的 x ,y 作为屏幕做包。
+
+z （[-1, 1] OpenGL [0, 1] DX）也会投影到 z1-z2.
+
+窗口坐标（带着做过映射的z），会传递给光栅化阶段。
+
+![2.7](pic/2/2.7.png)
+
+>* Next, we describe how integer and floating point values relate to pixels (and texture
+coordinates). Given a horizontal array of pixels and using Cartesian coordinates, the
+left edge of the leftmost pixel is 0.0 in floating point coordinates. OpenGL has always
+used this scheme, and DirectX 10 and its successors use it. The center of this pixel is
+at 0.5. So, a range of pixels [0, 9] cover a span from [0.0, 10.0). The conversions are
+simply
+---
+
+
+
+
 
 
 
