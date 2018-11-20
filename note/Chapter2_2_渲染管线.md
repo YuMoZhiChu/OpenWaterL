@@ -862,7 +862,291 @@ McCormack et al. 这个人在这方面做了很多工作。
 
 所有的像素或者采样都会在一个基元中，会被发送到下一个阶段，像素处理阶段。
 
+## 2.5 Pixel Processing
 
+>* At this point, all the pixels that are considered inside a triangle or other primitive
+have been found as a consequence of the combination of all the previous stages. The
+pixel processing stage is divided into pixel shading and merging, shown to the right in
+Figure 2.8. Pixel processing is the stage where per-pixel or per-sample computations
+and operations are performed on pixels or samples that are inside a primitive.
+---
+在这里，所有像素都被认为存在一个三角形中，或者其他的基元中，这是作为前面一系列流程的结果。
+
+像素处理阶段，会分为像素的着色和合并，在2.8中可以看到。
+
+像素处理是一个每像素（或每个采样）进行计算并操作。
+
+### 2.5.1 Pixel Shading
+
+>* Any per-pixel shading computations are performed here, using the interpolated shading
+data as input. The end result is one or more colors to be passed on to the next
+stage. Unlike the triangle setup and traversal stages, which are usually performed
+by dedicated, hardwired silicon, the pixel shading stage is executed by programmable
+GPU cores. To that end, the programmer supplies a program for the pixel shader (or
+fragment shader, as it is known in OpenGL), which can contain any desired computations.
+A large variety of techniques can be employed here, one of the most important
+of which is texturing. Texturing is treated in more detail in Chapter 6. Simply put,
+texturing an object means “gluing” one or more images onto that object, for a variety
+of purposes. A simple example of this process is depicted in Figure 2.9. The image
+may be one-, two-, or three-dimensional, with two-dimensional images being the most
+common. At its simplest, the end product is a color value for each fragment, and these
+are passed on to the next substage.
+---
+任何逐像素的渲染计算都会在这发生，使用的是插值而得来的渲染数据。
+
+最终的结果会是一种或者多种的颜色，并传递给下一个阶段。
+
+不像三角形的2个阶段，会被硬件直接写死，像素处理阶段是可编程的GPU核心。
+
+为此，程序员们会提供一个像素着色器（在OpenGL里面被称为顶点着色器），可以包括任何需要的计算。
+
+这里可以采用一大堆的技术，一种最重要的就是纹理化。
+
+纹理化意味着对简单的输入有着更多的细节（6章），纹理化一个对象意味着 “粘合” 一张或者多张图片到这个物体上，可以应付各种各样的目的。
+
+一个这个过程的简单例子在2.9中，图片可以是1,2,3维的都行，当然2维的图片是最常见的。
+
+最简单的片段着色器，就是给每个顶点赋值一个固定的颜色，然后传递给下一个子阶段。
+
+![2.9](pic/2/2.9.png)
+
+### 2.5.2 Merging
+
+>* The information for each pixel is stored in the color buffer, which is a rectangular array
+of colors (a red, a green, and a blue component for each color). It is the responsibility
+of the merging stage to combine the fragment color produced by the pixel shading stage
+with the color currently stored in the buffer. This stage is also called ROP, standing
+for “raster operations (pipeline)” or “render output unit,” depending on who you ask.
+Unlike the shading stage, the GPU subunit that performs this stage is typically not
+fully programmable. However, it is highly configurable, enabling various effects.
+---
+每个像素的信息被存储在颜色缓冲中，这是一个矩形阵列（每种颜色的rgb三个分量）。
+
+合并阶段的责任就是，将由像素着色阶段并将颜色存储在缓冲中的片段的颜色组合起来。
+
+这个阶段被称为ROP， 意味着，光栅操作（流水线） 或者 渲染输出单元。
+
+不像渲染阶段，执行GPU的子单元是不可编程的。
+
+然而，它可以配置各种属性，来实现各种效果（比如stencil state的配置）。
+
+>* This stage is also responsible for resolving visibility. This means that when the
+whole scene has been rendered, the color buffer should contain the colors of the primitives
+in the scene that are visible from the point of view of the camera. For most
+or even all graphics hardware, this is done with the z-buffer (also called depth buffer)
+algorithm [238]. A z-buffer is the same size and shape as the color buffer, and for
+each pixel it stores the z-value to the currently closest primitive. This means that
+when a primitive is being rendered to a certain pixel, the z-value on that primitive
+at that pixel is being computed and compared to the contents of the z-buffer at the
+same pixel. If the new z-value is smaller than the z-value in the z-buffer, then the
+primitive that is being rendered is closer to the camera than the primitive that was
+previously closest to the camera at that pixel. Therefore, the z-value and the color
+of that pixel are updated with the z-value and color from the primitive that is being
+drawn. If the computed z-value is greater than the z-value in the z-buffer, then the
+color buffer and the z-buffer are left untouched. The z-buffer algorithm is simple, has
+O(n) convergence (where n is the number of primitives being rendered), and works
+for any drawing primitive for which a z-value can be computed for each (relevant)
+pixel. Also note that this algorithm allows most primitives to be rendered in any
+order, which is another reason for its popularity. However, the z-buffer stores only a
+single depth at each point on the screen, so it cannot be used for partially transparent
+primitives. These must be rendered after all opaque primitives, and in back-to-front
+order, or using a separate order-independent algorithm (Section 5.5). Transparency is
+one of the major weaknesses of the basic z-buffer.
+---
+在这个阶段同样负责解决可见性的问题。
+
+这意味着当场景被渲染时，颜色缓冲应该存储着对应基元的颜色（从这当前摄像机看来是可见的）。
+
+对于大多数甚至所有的图形硬件，这个阶段用 z缓冲的算法来实现。
+
+一个z缓冲于颜色缓冲有着相同的大小和形状，并且对于每个像素，它存储着一个最近基元的z值。
+
+着意味着，当一个基元被渲染到一个确定的像素是，基元上在这个像素点上的z值会被计算，并和同样像素点为的在z缓冲上的z值比较。
+
+如果新的z值比z缓冲上的z值要小，那么这个基元会被渲染到照相机上，来替换原来的基元。
+
+因此，一个像素的z值和颜色会被该基元在绘制的过程中更新。
+
+如果新的z值比原来的z值大，则保持不变。
+
+z值的算法很简单，是 O(n) 收敛（n代表有多少个基元被渲染），并且会对每一个在当前像素有z值的基元进行计算。
+
+同事，这个算法也运行大多数的基元按照任何的书序被渲染，这也是它很流行的原因。（可以确定顺序？）
+
+然而，z值只会在屏幕上存储单个的深度，所以不能用于部分透明的基元。
+
+这些透明的部分必须在所有不透明的基元渲染之后渲染，用一个后向前呈现的方式，或者是用一个单独的算法（章节5.5会详细谈到）。
+
+透明的渲染是z缓冲算法的一个弱点。
+
+>* We have mentioned that the color buffer is used to store colors and that the z-buffer
+stores z-values for each pixel. However, there are other channels and buffers that can
+be used to filter and capture fragment information. The alpha channel is associated
+with the color buffer and stores a related opacity value for each pixel (Section 5.5).
+In older APIs, the alpha channel was also used to discard pixels selectively via the
+alpha test feature. Nowadays a discard operation can be inserted into the pixel shader
+program and any type of computation can be used to trigger a discard. This type of
+test can be used to ensure that fully transparent fragments do not affect the z-buffer
+(Section 6.6).
+---
+我们提到过颜色缓冲为每个像素存储颜色值，z缓冲为每个像素存储z值。
+
+然而还有其他通道和缓冲能够用于过滤和捕获片段信息。
+
+alpha通道和颜色缓冲有关，存储了每个像素的不透明值（其实就是透明度）。
+
+在旧的API中，alpha通道也会丢弃选择性的丢弃像素值（不通过alpha测试的）。
+
+现在在像素着色器代码中，以及任何的计算都能触发丢弃。（就是discard语句）
+
+这类测试能保证完全透明的内容不会影响到z缓冲。（章节6.6中有详细介绍）
+
+>* The stencil buffer is an offscreen buffer used to record the locations of the rendered
+primitive. It typically contains 8 bits per pixel. Primitives can be rendered into the
+stencil buffer using various functions, and the buffer’s contents can then be used to
+control rendering into the color buffer and z-buffer. As an example, assume that a filled
+circle has been drawn into the stencil buffer. This can be combined with an operator
+that allows rendering of subsequent primitives into the color buffer only where the
+circle is present. The stencil buffer can be a powerful tool for generating some special
+effects. All these functions at the end of the pipeline are called raster operations
+(ROP) or blend operations. It is possible to mix the color currently in the color buffer
+with the color of the pixel being processed inside a triangle. This can enable effects
+such as transparency or the accumulation of color samples. As mentioned, blending
+is typically configurable using the API and not fully programmable. However, some
+APIs have support for raster order views, also called pixel shader ordering, which
+enable programmable blending capabilities.
+---
+模板缓冲是一块跟屏幕外的缓冲区（不会出现在渲染的内容上），被用作记录渲染基于的位置。
+
+一般来说，它包含了8个bit。
+
+基元可以渲染到模板缓冲区上（通过各种函数），缓冲的内容可以被用作控制颜色缓冲和z缓冲。
+
+比如，一个填充好的圆已经被渲染到了模板缓冲上。
+
+这个以做一个与操作，让后续的渲染基元只能在圆内做一次渲染。
+
+模板缓冲是一种强大的功能，能够产生特定的渲染效果。
+
+他可以做到混合当前缓冲区的颜色与三角形像素内的颜色。
+
+它能够做到透明度和颜色累加的例子。
+
+如上所示，混合通常是通过API进行设置，而不知完全可编程的。
+
+然而，有些API支持光栅化顺序视图，也叫像素着色顺序，能够启用可编程的混合功能。
+
+>* The framebuffer generally consists of all the buffers on a system.
+---
+帧缓冲由系统上的所有缓冲组成
+
+>* When the primitives have reached and passed the rasterizer stage, those that are
+visible from the point of view of the camera are displayed on screen. The screen
+displays the contents of the color buffer. To avoid allowing the human viewer to see
+the primitives as they are being rasterized and sent to the screen, double buffering is
+used. This means that the rendering of a scene takes place off screen, in a back buffer.
+Once the scene has been rendered in the back buffer, the contents of the back buffer
+are swapped with the contents of the front buffer that was previously displayed on
+the screen. The swapping often occurs during vertical retrace, a time when it is safe
+to do so.
+---
+当基元到达并通过光栅化阶段时，那些在摄像机上可见的点会被显示在屏幕上。
+
+该屏幕上有内容的颜色缓冲。
+
+为了让人们避免看到光栅化的过程，这里使用了双缓冲。
+
+这意味着，渲染工作是在离屏的一张缓冲上进行的。
+
+当渲染完成时，会发生交换。
+
+交换的发生在 vertical retrace， 垂直回收期间，这个阶段是安全的（可能是线程安全吧）。
+
+>* For more information on different buffers and buffering methods, see Sections 5.4.2,
+23.6, and 23.7.
+---
+更多请看 5.4.2, 23.6, 以及 23.7. 等章节。
+
+## 2.6 Through the Pipeline
+
+>* Points, lines, and triangles are the rendering primitives from which a model or an
+object is built. Imagine that the application is an interactive computer aided design
+(CAD) application, and that the user is examining a design for a waffle maker. Here
+we will follow this model through the entire graphics rendering pipeline, consisting of
+the four major stages: application, geometry, rasterization, and pixel processing. The
+scene is rendered with perspective into a window on the screen. In this simple example,
+the waffle maker model includes both lines (to show the edges of parts) and triangles
+(to show the surfaces). The waffle maker has a lid that can be opened. Some of the
+triangles are textured by a two-dimensional image with the manufacturer’s logo. For
+this example, surface shading is computed completely in the geometry stage, except
+for application of the texture, which occurs in the rasterization stage.
+---
+点，线，三角形，这些渲染基元由模型或被建立的物体而来。
+
+想象一下，这是一个交互式计算辅助设计的软件，而且用户正在使用它来检测一个华夫饼干制作机器的模型设计。
+
+这里我们通过整个管线来最终这个模型，主要分为4个步骤。
+
+应用程序，几何，光栅化，像素处理。
+
+该场景用透视渲染最终渲染到屏幕上。
+
+在这个简单的例子中，华夫饼干制作机器模型有线（它的边角），有三角形（它的表面）。
+
+它还有一个可以打开的盖子。
+
+某些三角形是由2D的纹理图片组成。
+
+对于此例子，表面着色完全由几何阶段计算，除了纹理的应用，这部分发生在光栅化阶段。
+
+### Application
+>* CAD applications allow the user to select and move parts of the model. For example,
+the user might select the lid and then move the mouse to open it. The application
+stage must translate the mouse move to a corresponding rotation matrix, then see to
+it that this matrix is properly applied to the lid when it is rendered. Another example:
+An animation is played that moves the camera along a predefined path to show the
+waffle maker from different views. The camera parameters, such as position and view
+direction, must then be updated by the application, dependent upon time. For each
+frame to be rendered, the application stage feeds the camera position, lighting, and
+primitives of the model to the next major stage in the pipeline—the geometry stage.
+---
+CAD 程序允许用户选择和移动模型的各个部分。
+
+比如用户可能会选择盖子，并打开它。
+
+应用程序阶段需要将鼠标的移动转化为相应的旋转矩阵，然后再查看盖子的时候使用正确的矩阵。
+
+另一个例子是播放动画。
+
+摄像机的参数，比如位置和view向量，必须由应用阶段更新。
+
+包括摄像机信息，光照和模型的基元，会被传递给下一个主要阶段，几何阶段。
+
+### Geometry Processing
+>* For perspective viewing, we assume here that the application has supplied a projection
+matrix. Also, for each object, the application has computed a matrix that describes
+both the view transform and the location and orientation of the object in itself. In
+our example, the waffle maker’s base would have one matrix, the lid another. In
+the geometry stage the vertices and normals of the object are transformed with this
+matrix, putting the object into view space. Then shading or other calculations at
+the vertices may be computed, using material and light source properties. Projection
+is then performed using a separate user-supplied projection matrix, transforming the
+object into a unit cube’s space that represents what the eye sees. All primitives outside
+the cube are discarded. All primitives intersecting this unit cube are clipped against
+the cube in order to obtain a set of primitives that lies entirely inside the unit cube.
+The vertices then are mapped into the window on the screen. After all these pertriangle
+and per-vertex operations have been performed, the resulting data are passed
+on to the rasterization stage.
+---
+因为是透视视角，我们假设应用阶段提供了一个投影矩阵。
+
+对于每个物体，应用阶段已经计算出来它自身的位置和方向。
+
+在几何阶段，点和发小会被这个矩阵相乘，转换到视线空间。
+
+然后着色或者其他的顶点的计算会被执行，这时会使用材质和光源的一些属性。
+
+投影
 
 
 
