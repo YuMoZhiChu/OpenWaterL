@@ -737,6 +737,131 @@ used this scheme, and DirectX 10 and its successors use it. The center of this p
 at 0.5. So, a range of pixels [0, 9] cover a span from [0.0, 10.0). The conversions are
 simply
 ---
+接下来，我们谈谈，整数和浮点数的值，怎么和像素（以及贴图坐标）相关。
+
+给定一个水平的像素列表，并使用笛卡尔坐标系，最左边的像素就是 0.0
+
+OpenGL一直使用的是这个方案，DX10 以及后续的版本也用这个。
+
+中心的像素是 0.5， 比如一个[0,9]的像素要对应 [0.0, 10.0), 他们的转换关系是：
+
+![公式1](pic/2/公式1.png)
+
+>* where d is the discrete (integer) index of the pixel and c is the continuous (floating
+point) value within the pixel.
+
+d 是离散的像素索引，c是连续的浮点数值，对应在一个像素内。
+
+>* While all APIs have pixel location values that increase going from left to right, the
+location of zero for the top and bottom edges is inconsistent in some cases between
+OpenGL and DirectX.2 OpenGL favors the Cartesian system throughout, treating
+the lower left corner as the lowest-valued element, while DirectX sometimes defines
+the upper left corner as this element, depending on the context. There is a logic to
+each, and no right answer exists where they differ. As an example, (0, 0) is located at
+the lower left corner of an image in OpenGL, while it is upper left for DirectX. This
+difference is important to take into account when moving from one API to the other.
+---
+虽然所有的API都是从左到右递增像素位置值，但从上到下，0的位置会在某些时候不一样。
+
+opengl会把左下角定位最小的值，但DX有时会定在左上角，这取决于它的上下文环境。
+
+这个各种情况不一样。
+
+比如，（0，0）可能在 OpenGL的左下角，而在DX 的左上角，从一个api到另一个api时，这个转换非常重要。
+
+## 2.4 Rasterization
+
+>* Given the transformed and projected vertices with their associated shading data (all
+from geometry processing), the goal of the next stage is to find all pixels—short for
+picture elements—that are inside the primitive, e.g., a triangle, being rendered. We
+call this process rasterization, and it is split up into two functional substages: triangle
+setup (also called primitive assembly) and triangle traversal. These are shown to the
+left in Figure 2.8. Note that these can handle points and lines as well, but since triangles
+are most common, the substages have “triangle” in their names. Rasterization,
+also called scan conversion, is thus the conversion from two-dimensional vertices in
+screen space—each with a z-value (depth value) and various shading information associated
+with each vertex—into pixels on the screen. Rasterization can also be thought
+of as a synchronization point between geometry processing and pixel processing, since
+it is here that triangles are formed from three vertices and eventually sent down to
+pixel processing.
+---
+给定变化过并且投影过的顶点和他们的渲染数据（都进过了几何处理），下一个阶段的目标就是找到所有的像素（图元），在几何元素的内部。
+
+比如，一个将要渲染的三角形。
+
+我们把这个过程称为光栅化，并把它分为2个功能子阶段：三角形设置（也称为基元组装）和三角形遍历。
+
+他们在图2.8中被表现。
+
+注意到，这个过程能处理所有的点和线，但是最常处理的还是三角形。
+
+光栅化，也被称为扫描转换，因为这是一个从一个拥有z值的屏幕空间的二维坐标表（和他对于的渲染数据），转换到屏幕上的像素点。、
+
+光栅化，也能被视作一个同步点的过程（在几何处理和像素处理之间），因为它在这里把由三个顶点的三角形，最终给像素处理阶段处理。
+
+![2.8](pic/2/2.8.png)
+
+>* Whether the triangle is considered to overlap the pixel depends on how you have
+set up the GPU’s pipeline. For example, you may use point sampling to determine
+“insideness.” The simplest case uses a single point sample in the center of each
+pixel, and so if that center point is inside the triangle then the corresponding pixel is
+considered inside the triangle as well. You may also use more than one sample per
+pixel using supersampling or multisampling antialiasing techniques (Section 5.4.2).
+Yet another way is to use conservative rasterization, where the definition is that a
+pixel is “inside” the triangle if at least part of the pixel overlaps with the triangle
+(Section 23.1.2).
+---
+三角形是否与像素重叠，取决于你对GPU管线的设置。
+
+比如，你可能使用了点采样来确定 “内心”。
+
+最简单的情况就是，用单个在像素内的的点，如果这个点在三角形内，那么这个像素也在三角形内。
+
+你还可以使用超采样或者多重采样技术来处理像素。
+
+另一种方法是使用保守的光栅化，当像素的一部分和三角形重叠时，视为这个像素在三角形内。
+
+### 2.4.1 Triangle Setup
+
+>* In this stage the differentials, edge equations, and other data for the triangle are
+computed. These data may be used for triangle traversal (Section 2.4.2), as well as
+for interpolation of the various shading data produced by the geometry stage. Fixedfunction
+hardware is used for this task.
+---
+在这个阶段，三角形的差分，边缘方程，以及三角形的其他数据也会被计算。
+
+这些数据会被用于三角形遍历，以及用于对几何阶段产生的数据进行插值。
+
+这些功能函数被固定在硬件上。
+
+### 2.4.2 Triangle Traversal
+>* Here is where each pixel that has its center (or a sample) covered by the triangle is
+checked and a fragment generated for the part of the pixel that overlaps the triangle.
+More elaborate sampling methods can be found in Section 5.4. Finding which
+samples or pixels are inside a triangle is often called triangle traversal. Each triangle
+fragment’s properties are generated using data interpolated among the three triangle
+vertices (Chapter 5). These properties include the fragment’s depth, as well as any
+shading data from the geometry stage. McCormack et al. [1162] offer more information
+on triangle traversal. It is also here that perspective-correct interpolation over
+the triangles is performed [694] (Section 23.1.1). All pixels or samples that are inside
+a primitive are then sent to the pixel processing stage, described next.
+---
+在这里，每一个像素（它的中心或采样被三角形覆盖）都会被检查，并为这个覆盖了三角形的像素的部分生成片元。
+
+更多详细的采样方法将在 5.4 中介绍。
+
+找到哪一个采样，或者像素在三角形内被称为三角形遍历。
+
+每个三角形片元（指的是三角形对应的片元）的属性，由3个三角形顶点数据插值而得到。
+
+这些属性包括了，片元的深度，以及在几何阶段的任何渲染数据。
+
+McCormack et al. 这个人在这方面做了很多工作。
+
+这里也是用透视较真的插值方法来处理的（在 23.1.1 章中)
+
+所有的像素或者采样都会在一个基元中，会被发送到下一个阶段，像素处理阶段。
+
 
 
 
