@@ -1146,7 +1146,88 @@ on to the rasterization stage.
 
 然后着色或者其他的顶点的计算会被执行，这时会使用材质和光源的一些属性。
 
-投影
+投影会使用一个单独的投影矩阵表现，把眼睛能看到的东西都变换到一个单位正方体内。
+
+所有在正方体内的基元都会被丢弃。
+
+所有相交的基元会被裁剪，以获得新的基元。
+
+当这些操作被执行后，结果传递到光栅化阶段。
+
+### Rasterization
+>* All the primitives that survive clipping in the previous stage are then rasterized, which
+means that all pixels that are inside a primitive are found and sent further down the
+pipeline to pixel processing.
+---
+所有在裁剪阶段存活的基元，会进行光栅化。
+
+这意味着，在一个基元内的所有像素会被记录，并送往像素处理阶段。
+
+### Pixel Processing
+>* The goal here is to compute the color of each pixel of each visible primitive. Those
+triangles that have been associated with any textures (images) are rendered with these
+images applied to them as desired. Visibility is resolved via the z-buffer algorithm,
+along with optional discard and stencil tests. Each object is processed in turn, and
+the final image is then displayed on the screen.
+---
+这个阶段的目标是，计算每个可见基元的每个像素的颜色。
+
+这些三角形可能会和某些贴图相关联。
+
+可见性通过z缓冲算法，以及可选择的丢弃，和模板测试。
+
+当每个object被依次处理，最终的图像会显示在屏幕上。
+
+### Conclusion
+>* This pipeline resulted from decades of API and graphics hardware evolution targeted
+to real-time rendering applications. It is important to note that this is not the only
+possible rendering pipeline; offline rendering pipelines have undergone different evolutionary
+paths. Rendering for film production was often done with micropolygon
+pipelines [289, 1734], but ray tracing and path tracing have taken over lately. These
+techniques, covered in Section 11.2.2, may also be used in architectural and design
+previsualization.
+---
+这个管道技术，源于数十年前的API和图形硬件到如今的实时渲染应用。
+
+它并不是唯一的可行的渲染管道。
+
+离线渲染经过了不同的演变。
+
+比如用于电影的渲染会使用 微多边形 管道，但是光线追踪和路径追踪技术，在最近被取代了。
+
+这些技术在 11.2.2 中有详细提及。
+
+>* For many years, the only way for application developers to use the process described
+here was through a fixed-function pipeline defined by the graphics API in use. The
+fixed-function pipeline is so named because the graphics hardware that implements it
+consists of elements that cannot be programmed in a flexible way. The last example of
+a major fixed-function machine is Nintendo’s Wii, introduced in 2006. Programmable
+GPUs, on the other hand, make it possible to determine exactly what operations are
+applied in various sub-stages throughout the pipeline. For the fourth edition of the
+book, we assume that all development is done using programmable GPUs.
+---
+一直以来，应用程序人员都是使用图形API定义的固定管线。
+
+这个 固定管线 的命名，就是因为它没办法灵活编程。
+
+最后一个固定管线的例子就是 Nintendo 的 Wii（2006）年版。
+
+可编程的管线，能够让GPU准确的操作整个管道的各个子阶段。
+
+我们这本书，都是在这个假设上完成的。
+
+### Further Reading and Resources
+>* Blinn’s book A Trip Down the Graphics Pipeline [165] is an older book about writing
+a software renderer from scratch. It is a good resource for learning about some of
+the subtleties of implementing a rendering pipeline, explaining key algorithms such
+as clipping and perspective interpolation. The venerable (yet frequently updated)
+OpenGL Programming Guide (a.k.a. the “Red Book”) [885] provides a thorough description
+of the graphics pipeline and algorithms related to its use. Our book’s website,
+realtimerendering.com, gives links to a variety of pipeline diagrams, rendering engine
+implementations, and more.
+---
+应该买本 OpenGL 编程指南看一看了。
+
 
 
 
