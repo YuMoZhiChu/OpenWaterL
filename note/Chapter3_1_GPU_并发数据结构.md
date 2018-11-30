@@ -301,4 +301,116 @@ NVIDA上的组包含了32个线程。
 
 ![3.1](pic/3/3.1.png)
 
+```
+Figure 3.1. Simplified shader execution example. A triangle’s fragments, called threads, are gathered
+into warps. Each warp is shown as four threads but have 32 threads in reality. The shader program
+to be executed is five instructions long. The set of four GPU shader processors executes these
+instructions for the first warp until a stall condition is detected on the “txr” command, which needs
+time to fetch its data. The second warp is swapped in and the shader program’s first three instructions
+are applied to it, until a stall is again detected. After the third warp is swapped in and stalls, execution
+continues by swapping in the first warp and continuing execution. If its “txr” command’s data are
+not yet returned at this point, execution truly stalls until these data are available. Each warp finishes
+in turn.
+```
+图3.1 是一个简化的shader执行例子。
 
+一个三角形的片元，称为线程，被收集到组中。
+
+每个组显示为4个线程，但实际上有32个。
+
+渲染程序要执行的是5个指令。
+
+这4个GPU渲染核心会从第一个组执行这些指令，直到遇到 "txr" 命令，这条命令需要获取它的数据。
+
+第二个组被交换进来，并替换第一组，执行，直到 "txr"
+
+当第三个组被执行完成后，如果 "txr" 命令还没有返回，这时，真正的延迟就会出现。
+
+每个组按顺序完成。
+
+>* In our simple example the latency of a memory fetch for a texture can cause a
+warp to swap out. In reality warps could be swapped out for shorter delays, since
+the cost of swapping is so low. There are several other techniques used to optimize
+execution [945], but warp-swapping is the major latency-hiding mechanism used by
+all GPUs. Several factors are involved in how efficiently this process works. For
+example, if there are few threads, then few warps can be created, making latency
+hiding problematic.
+---
+在我们的简单例子中，读取一张纹理的内存的延迟能够触发一次组的换出。
+
+实际上，组的交换甚至可能在更短的延迟上发生，因为交换的消耗实在是太小了。
+
+这里还有几种其他的技术来优化渲染程序的执行，但是组-交换机制是所有GPU主要隐藏延迟的手段。
+
+这个过程的工作有几个原因导致了它是如此的高效。
+
+比如，如果线程很少，很少的组被创建，那么隐藏延迟的机制就会有问题。
+
+>* The shader program’s structure is an important characteristic that influences efficiency.
+A major factor is the amount of register use for each thread. In our example
+we assume that two thousand threads can all be resident on the GPU at one time. The
+more registers needed by the shader program associated with each thread, the fewer
+threads, and thus the fewer warps, can be resident in the GPU. A shortage of warps
+can mean that a stall cannot be mitigated by swapping. Warps that are resident are
+said to be “in flight,” and this number is called the occupancy. High occupancy means
+that there are many warps available for processing, so that idle processors are less
+likely. Low occupancy will often lead to poor performance. The frequency of memory
+fetches also affects how much latency hiding is needed. Lauritzen [993] outlines how
+occupancy is affected by the number of registers and the shared memory that a shader
+uses. Wronski [1911, 1914] discusses how the ideal occupancy rate can vary depending
+on the type of operations a shader performs.
+---
+渲染程序的结构是一个主要影响效率的原因。
+
+一个最主要的因素就是每个线程使用的寄存器数量。
+
+在我们的例子里，我们假设2000个线程能够一次性驻留在GPU上。
+
+当每个与线程关联的着色器程序需要更多的寄存器，线程就会更少，也会更少的组驻留在GPU中。
+
+少量的组意味着，延迟不能通过切换进行缓和。
+
+驻留的组被称为“正在飞行”，他们的数量就是占有率。
+
+高占有率代表会有许多组能过被处理，因此处理器会更少的延迟。
+
+低的占有率会导致性能不好。
+
+获取内存的频率同样影响到了延迟。
+
+Lauritzen 概述了占用率如何受到着色器的寄存器数量和共享内存的影响。
+
+Wronski 讨论了怎样的占有率会根据shader的类型做怎样的变化。
+
+>* Another factor affecting overall efficiency is dynamic branching, caused by “if”
+statements and loops. Say an “if” statement is encountered in a shader program. If
+all the threads evaluate and take the same branch, the warp can continue without any
+concern about the other branch. However, if some threads, or even one thread, take
+the alternate path, then the warp must execute both branches, throwing away the
+results not needed by each particular thread [530, 945]. This problem is called thread
+divergence, where a few threads may need to execute a loop iteration or perform an
+“if” path that the other threads in the warp do not, leaving them idle during this
+time.
+---
+另一个影响整体效率的就是动态分支，由if语句或者循环引起的。
+
+假设一个渲染程序中出现了if。
+
+如果所有的线程计算，并做了相同的选择，那么组就会继续，不会考虑对另一支线做任何考虑。
+
+然而，如果有些线程，或者是只要有一个线程，选择了不同的分支，那么组就必须执行2个分支，并且针对每个线程扔掉不需要的结果。
+
+这个问题叫做线程分歧，少数的线程可能需要执行一个循环迭代，或者执行if路径（其他组中的线程不选择的），导致了他们会在这段时间等待。
+
+>* All GPUs implement these architectural ideas, resulting in systems with strict
+limitations but massive amounts of compute power per watt. Understanding how
+this system operates will help you as a programmer make more efficient use of the
+power it provides. In the sections that follow we discuss how the GPU implements
+the rendering pipeline, how programmable shaders operate, and the evolution and
+function of each GPU stage.
+---
+所有的GPU都实现了这些结构，导致了系统会严格限制但是却需要在每瓦特做大量的计算。
+
+知道这个机制能够帮助程序员更好的使用它。
+
+在接下来的阶段，我们会讨论GPU是如何实现渲染管线的，可编程的着色器如何操作，以及GPU每个阶段的功能烟花。

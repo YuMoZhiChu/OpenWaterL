@@ -24,9 +24,9 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
-	FBXTest();
+	//FBXTest();
 
-	CConsoleInstance().Show(true);
+	//CConsoleInstance().Show(true);
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -57,6 +57,11 @@ int main()
 
 	// init IO Thread
 	CIOTaskManager::Initialize();
+
+	int a, b, c;
+	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &a);
+	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &b);
+	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &c);
 
 	// render loop
 	// -----------
