@@ -192,7 +192,7 @@ official support in a release.
 
 DX和OpenGL的进化不同。
 
-两者都对硬件上的支持有了一个明确的版本要求。
+两者都对硬件上的支持需求有了一个明确的版本要求。
 
 微软直接控制DX的API，并和一些独立的硬件供应商，比如AMD，NVIDIA，Intel，还有一些游戏开发者，一起决定提供的新特性。
 
@@ -262,7 +262,7 @@ from workstations to mobile devices.
 ---
 AMD 把它的Mantle 代码给了  Khronos 组织，然后 Kh 在2016年发布了新的API，叫做  Vulkan。
 
-相比OpenGL，Vulkan可用在多个操作系统上工作。
+和OpenGL一样，Vulkan可用在多个操作系统上工作。
 
 Vulkan 使用了一种新的高级中间语言 SPIRV，它用于着色器表示和通用的GPU计算。
 
@@ -338,7 +338,7 @@ example.
 ---
 webGL 非常适合在课堂上做实验。
 
-1. 它是跨平台的，使用于个人的所有计算机和几乎所有移动设备
+1. 它是跨平台的，适用于个人的所有计算机和几乎所有移动设备
 
 2. 驱动程序由浏览器处理。如果一个浏览器不支持，那么另一个应该可以。
 
