@@ -49,7 +49,7 @@ DX能够被编译成虚拟机器码，也称为中间语言（IL或DXIL），提
 
 一种中间的表示方法同时能够允许着色器程序能够被离线编译和存储。
 
-控制台编程通常会避开中间语言的步骤，因为那是只有一个ISA。
+游戏主机编程通常会避开中间语言的步骤，因为那是只有一个ISA。
 
 >* The basic data types are 32-bit single-precision floating point scalars and vectors,
 though vectors are only part of the shader code and are not supported in hardware as
@@ -186,7 +186,7 @@ between shader invocations.
 
 动态流控制是基于不同的输入的，这意味着每个片元可能执行不同的代码。
 
-这能提供跟多的功能，但同时也会是更多的消耗，特别是在控制流在shader的互相调用时不稳定的变化。
+这能提供跟多的功能，但同时也会是更多的消耗，特别是在shader的调用时，流控制会发生不稳定的变化。
 
 
 

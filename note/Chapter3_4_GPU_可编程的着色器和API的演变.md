@@ -10,7 +10,7 @@ other evolving specifications, such as the Open Shading Language (OSL) project [
 
 这是一个非常简单的着色过程，它对应的树在图3.4中显示。
 
-1980年，一门叫 RenderMan 的渲染语言从这个想法中诞生出来。
+1980年代，一门叫 RenderMan 的渲染语言从这个想法中诞生出来。
 
 如今，这种渲染模式还在被电影的渲染流程使用，当然，加上了更多的规范，比如 OSL。
 

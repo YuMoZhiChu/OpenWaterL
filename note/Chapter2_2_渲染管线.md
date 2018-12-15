@@ -283,7 +283,7 @@ using the methods in Sections 4.4 and 4.5.
 
 与求出任何在顶点输出阶段我们需要的值，比如 法线 和 纹理坐标。
 
-一般来说，会将通过灯光，点的位置，法线计算出的阴影存在 vertex 的颜色中。
+在很久之前，会将通过灯光，点的位置，法线计算出的阴影存在 vertex 的颜色中。
 
 在三角形中，将这些值做插值。
 
@@ -530,7 +530,7 @@ triangles.
 通过 曲面细分，一个曲面 可以生成 近似个数的三角形。
 
 ```
-这是写在管线里的 LOD 算法么？
+这是写在管线里的 LOD 算法么？ 是的
 ```
 
 >* We have talked a bit about triangles, but up to this point in the pipeline we have
@@ -625,6 +625,7 @@ coordinates that will be checked for whether the camera views them.
 
 ```
 这意味着，加入其中一个阶段，我们会做一次点是否在摄像机的视椎体内的判断。
+不是的，其实是在加入可选之后，我们才会做裁剪
 ```
 
 ### 2.3.3 Clipping
