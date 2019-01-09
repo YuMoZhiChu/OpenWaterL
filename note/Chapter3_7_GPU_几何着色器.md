@@ -75,7 +75,7 @@ particles from point data, extruding fins along silhouettes for fur rendering, a
 finding object edges for shadow algorithms. See Figure 3.13 for more examples. These
 and other uses are discussed throughout the rest of the book.
 ---
-几何着色器被设计为，对输入数据修改，或者对复制的数量进行限制（看不懂这个功能）
+几何着色器被设计为，对输入数据修改，或者做一定数量的拷贝。
 
 比如，一个用处就是生成6个 变换后的数据，来同时生成并渲染正方体的6个面 （10.4.3）。
 
@@ -198,7 +198,7 @@ order that they were input, meaning the vertex order will be maintained [530].
 
 因此一个更典型的用法就是将管道的基元就是一个点。
 
-在OpenGl中，流疏忽从阶段被称为变换反馈，因为它专注于转换顶点并返回他们做进一步的处理。
+在OpenGl中，流输出从阶段被称为变换反馈，因为它专注于转换顶点并返回他们做进一步的处理。
 
 流输出的基元会按照输入的顺序输出，这意味着能够保持顶点的顺序。
 
