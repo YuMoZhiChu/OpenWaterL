@@ -225,7 +225,7 @@ are the three translation values followed by a one.
 
 比如，DX就是这么做的。
 
-在这种情况下，矩阵的顺序应该被反过来，就是矩阵的顺序应该从左往右。
+在这种情况下，矩阵的顺序应该被反过来，就是矩阵的顺序应该**从左往右**。（本书的顺序是**从右往左**）
 
 向量和矩阵在这种表示下都被称为 行主矩阵，因为向量都是行。
 
@@ -285,7 +285,171 @@ matrix is obtained. For every 3×3 rotation matrix, R, that rotates φ radians a
 any axis, the trace (which is the sum of the diagonal elements in a matrix) is constant
 independent of the axis, and is computed as [997]:
 ----
+如果我们删除最下面的行以及最右边的列，我们会从一个4X4的矩阵得到一个3X3的矩阵。
 
+对于每一个 3X3 矩阵 R，绕任意轴旋转 φ 弧度
+
+其迹 （一个矩阵中的对角线元素和）将是与坐标轴无关的常量，可以在4.8中计算：
+
+![Trace Wiki](pic/4/trace_wiki.png)
+
+![Formula 4 8](pic/4/formula_4_8.png)
+
+*其实就是上面3个公式4.5-4.7中的前3个对角线上值的和*
+
+>* The effect of a rotation matrix may be seen in Figure 4.4 on page 65. What characterizes
+a rotation matrix, Ri(φ), besides the fact that it rotates φ radians around
+axis i, is that it leaves all points on the rotation axis, i, unchanged. Note that R will
+also be used to denote a rotation matrix around any axis. The axis rotation matrices
+given above can be used in a series of three transforms to perform any arbitrary axis
+rotation. This procedure is discussed in Section 4.2.1. Performing a rotation around
+an arbitrary axis directly is covered in Section 4.2.4.
+----
+旋转的效果可以在图4.4中看到。
+
+旋转矩阵  Ri(φ)，绕着 i 轴旋转 φ 弧度，其中一个最大的特点就是在旋转轴 i 上的点是不变的。
+
+值得注意的是 R 也可以用来表示绕任意轴的旋转。
+
+轴旋转矩阵可以由上面3个变换组合得来。
+
+4.2.1 中会讨论这个过程，4.2.4直接讨论任意轴的旋转。
+
+![4.4](pic/4/4.4.png)
+
+>* All rotation matrices have a determinant of one and are orthogonal. This also
+holds for concatenations of any number of these transforms. There is another way to
+obtain the inverse: R−1
+i (φ) = Ri(−φ), i.e., rotate in the opposite direction around
+the same axis.
+----
+所有旋转矩阵，行列式都是1，并且是正交的。
+
+这个特性对任意旋转矩阵的串联一样适用。
+
+还有另一种方法求旋转矩阵的逆 R^(-1) i (φ) = Ri(−φ)，即 向反方向旋转相样的角度。
+
+>* Example: Rotation Around a Point. Assume that we want to rotate an object
+by φ radians around the z-axis, with the center of rotation being a certain point,
+p. What is the transform? This scenario is depicted in Figure 4.2. Since a rotation
+around a point is characterized by the fact that the point itself is unaffected by the
+rotation, the transform starts by translating the object so that p coincides with the
+origin, which is done with T(−p). Thereafter follows the actual rotation: Rz(φ).
+Finally, the object has to be translated back to its original position using T(p). The
+resulting transform, X, is then given by
+----
+这是一个例子: 绕点旋转。
+
+假设我们想让一个物体绕 z 轴旋转 φ 弧度，其旋转中心是确定点 P。
+
+会是怎样的旋转呢？
+
+图4.2展示了这个场景。
+
+因为绕一个点的旋转的特质是，这个中心点自身不会受到旋转的影响。
+
+所以我们先将点 P 移动到原点，就是  T(−p)。
+
+然后做旋转 Rz(φ)。
+
+最后平移到原来的位置，使用 T(p)。
+
+结果写作 X ：（注意矩阵的顺序）
+
+![Formula 4 9](pic/4/formula_4_9.png)
+
+![4.2](pic/4/4.2.png)
+
+### 4.1.2 Scaling
+缩放
+
+>* A scaling matrix, S(s) = S(sx, sy, sz), scales an entity with factors sx, sy, and sz
+along the x-, y-, and z-directions, respectively. This means that a scaling matrix can
+be used to enlarge or diminish an object. The larger the si, i ∈ {x, y, z}, the larger the
+scaled entity gets in that direction. Setting any of the components of s to 1 naturally
+avoids a change in scaling in that direction. Equation 4.10 shows S:
+----
+一个缩放矩阵， S(s) = S(sx, sy, sz)，会对一个物体进行 x,y,z 轴三个方向分别进行 sx,sy,sz 的缩放。
+
+这意味着，一个缩放矩阵能够用来放大或者缩小一个物体。
+
+si i ∈ {x, y, z} 越大，这个方向的物体就越大。
+
+如果 s 是1，就不变。
+
+![Formula 4 10](pic/4/formula_4_10.png)
+
+>* Figure 4.4 on page 65 illustrates the effect of a scaling matrix. The scaling operation
+is called uniform if sx = sy = sz and nonuniform otherwise. Sometimes the terms
+isotropic and anisotropic scaling are used instead of uniform and nonuniform. The
+inverse is S−1(s) = S(1/sx, 1/sy, 1/sz).
+---
+4.4 中举了缩放矩阵的例子。
+
+如果 sx = sy = sz，缩放被称为 均分缩放。
+
+有时用 各向同性 和 各向异性 来代替是否均匀的术语。
+
+缩放矩阵的逆是  S−1(s) = S(1/sx, 1/sy, 1/sz)。
+
+![4.4](pic/4/4.4.png)
+
+>* Using homogeneous coordinates, another valid way to create a uniform scaling
+matrix is by manipulating matrix element at position (3, 3), i.e., the element at the
+lower right corner. This value affects the w-component of the homogeneous coordinate,
+and so scales every coordinate of a point (not direction vectors) transformed by the
+matrix. For example, to scale uniformly by a factor of 5, the elements at (0, 0), (1, 1),
+and (2, 2) in the scaling matrix can be set to 5, or the element at (3, 3) can be set to
+1/5. The two different matrices for performing this are shown below:
+----
+使用齐次坐标，另一种创建标准缩放矩阵的方法是修改 第（3,3）个元素。
+
+就是，最右下角的元素。
+
+这个值影响了齐次坐标的 w 分量，因此可以影响到点（不能影响向量，因为向量的w是0）的每一个坐标。
+
+下图是2种不同的矩阵：
+
+![Formula 4 11](pic/4/formula_4_11.png)
+
+>* In contrast to using S for uniform scaling, using S′ must always be followed by homogenization.
+This may be inefficient, since it involves divides in the homogenization
+process; if the element at the lower right (position (3, 3)) is 1, no divides are necessary.
+Of course, if the system always does this division without testing for 1, then there is
+no extra cost.
+----
+对比于使用 S 来做标准缩放，使用 S′ 必须要进行齐次化。
+
+这可能会更加低效，因为它涉及到了齐次化的过程。
+
+如果右下角的元素是 1，则不需要除法。
+
+当然，如果系统进行是否为1，并做除法检测，当然不会有其他的消耗。
+
+>* A negative value on one or three of the components of s gives a type of reflection
+matrix, also called a mirror matrix. If only two scale factors are −1, then we will rotate
+π radians. It should be noted that a rotation matrix concatenated with a reflection
+matrix is also a reflection matrix. Hence, the following is a reflection matrix:
+----
+如果s的一个值或者3个值是负值时，被称为反射矩阵，或者镜像矩阵。
+
+如果是2个缩放因子是-1，那么我们将选择 180 度（π 弧度）。
+
+如果一个矩阵，串联了一个反射矩阵，那么它也是个反射矩阵。
+
+因此，下面这个就是反射矩阵：
+
+![Formula 4 12](pic/4/formula_4_12.png)
+
+>* Reflection matrices usually require special treatment when detected. For example,
+a triangle with vertices in a counterclockwise order will get a clockwise order when
+transformed by a reflection matrix. This order change can cause incorrect lighting and
+backface culling to occur. To detect whether a given matrix reflects in some manner,
+compute the determinant of the upper left 3 × 3 elements of the matrix. If the value
+is negative, the matrix is reflective. For example, the determinant of the matrix in
+Equation 4.12 is 0 · 0 − (−1) · (−1) = −1.
+----
+反射矩阵在检测时通常需要特殊处理
 
 
 
