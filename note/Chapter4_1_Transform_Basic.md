@@ -433,7 +433,7 @@ matrix is also a reflection matrix. Hence, the following is a reflection matrix:
 ----
 如果s的一个值或者3个值是负值时，被称为反射矩阵，或者镜像矩阵。
 
-如果是2个缩放因子是-1，那么我们将选择 180 度（π 弧度）。
+如果是2个缩放因子是-1，那么我们将旋转 180 度（π 弧度）。
 
 如果一个矩阵，串联了一个反射矩阵，那么它也是个反射矩阵。
 
@@ -449,7 +449,29 @@ compute the determinant of the upper left 3 × 3 elements of the matrix. If the 
 is negative, the matrix is reflective. For example, the determinant of the matrix in
 Equation 4.12 is 0 · 0 − (−1) · (−1) = −1.
 ----
-反射矩阵在检测时通常需要特殊处理
+反射矩阵在检测时通常需要特殊处理。
+
+比如说，一个逆时针顺序的由3个顶点组成的三角形，经过反射，它的顶点方向就会变为顺时针。
+
+这个顺序的改变可能会导致不正确的光照和背面剔除。
+
+为了检测出矩阵是不是一个某种方式的反射举证，我们会计算左上角，一个3x3 的元素矩阵的行列式。
+
+如果这个行列式是负数，那么这个矩阵是有反射性的。
+
+比如在 4.12 中，行列式的值时 -1。
+
+>* Example: Scaling in a Certain Direction. The scaling matrix S scales along
+only the x-, y-, and z-axes. If scaling should be performed in other directions, a
+compound transform is needed. Assume that scaling should be done along the axes
+of the orthonormal, right-oriented vectors fx, f y, and f z. First, construct the matrix
+F, to change the basis, as below:
+----
+例子: 在确定的方向上进行缩放。
+
+
+
+
 
 
 
