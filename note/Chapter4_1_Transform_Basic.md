@@ -668,7 +668,202 @@ X 的逆矩阵是 R(T转置)T(-t) 。
 
 这2个矩阵相乘就能得到对应的原来 X 的逆。
 
-另一种计算 X 的逆的方法是，假定一个矩阵 R
+另一种计算 X 的逆的方法是，假定一个矩阵 R 是一个3x3的旋转元素构成的矩阵
+
+则 X 可以写成：
+
+![Formula 4 18](pic/4/formula_4_18.png)
+
+>* where r,0 means the first column of the rotation matrix (i.e., the comma indicates any
+value from 0 to 2, while the second subscript is 0) and rT0,
+is the first row of the column matrix.
+Note that **0** is a 3×1 column vector filled with zeros.
+Some calculations yield the inverse in the expression shown in Equation 4.19:
+---
+r,0 表示旋转矩阵的第一列 （逗号表示从0到2， 第二个下标是0）
+
+rT0，表示矩阵的第一行，加粗的 0，表示的是一个 3x1 的列向量。
+
+化简后，X 的逆如下表示：
+
+![Formula 4 19](pic/4/formula_4_19.png)
+
+>* Example: Orienting the Camera.
+下面是一个旋转相机的例子
+---
+>* A common task in graphics is to orient the
+camera so that it looks at a certain position. Here we will present what gluLookAt()
+(from the OpenGL Utility Library, GLU for short) does. Even though this function
+call itself is not used much nowadays, the task remains common. Assume that the
+camera is located at c, that we want the camera to look at a target l, and that a given
+up direction of the camera is u′, as illustrated in Figure 4.5.
+---
+一个很常见的情形就是，旋转一个相机，让它看向某个确定的点。
+
+我们会展示，gluLookAt() 一个OpenGL的接口，做了什么。
+
+尽管这个函数如今不是经常使用了，但旋转一个相机的需求还是很多。
+
+假设我们的相机的位置在 c，我们想让相机看向目标 l，给定相机的 up 向量是 u`，如图 4.5。
+
+![4.5](pic/4/4.5.png)
+
+>* We want to compute a basis consisting of three vectors, {r, u, v}.
+We start by computing the view vector as v = (c-l)/||c-l||, 
+i.e., the normalized vector from the target to the camera position.
+A vector looking to the “right” can then be computed as r = - (v × u′)/||v × u′||.
+The u′ vector is often not guaranteed to be pointing precisely up, so the final up
+vector is another cross product, u = v × r, which is guaranteed to be normalized
+since both v and r are normalized and perpendicular by construction. In the camera
+transform matrix, M, that we will construct, the idea is to first translate everything
+so the camera position is at the origin, (0, 0, 0), and then change the basis so that r is
+aligned with (1, 0, 0), u with (0, 1, 0), and v with (0, 0, 1). This is done by
+---
+我们需要计算一组基向量 {r, u, v}
+
+首先是 v 的计算，  v = (c-l)/||c-l||
+
+这就是从相机位置c指向l的单位向量。
+
+右向量可以通过叉乘计算出来（这里多了一个负号，这里是左手系）
+
+r = - (v × u′)/||v × u′||
+
+u`向量经常不能保证精准的指向上方。
+
+所以需要用一次叉乘来校正。
+
+ u = v × r
+
+在摄像机变换的矩阵中，我们先把照相机的位置移动到原点。
+
+再改变基底，使得r,u,v 分别为标准的正交基底
+
+![Formula 4 20](pic/4/formula_4_20.png)
+
+>* Note that when concatenating the translation matrix with the change of basis matrix,
+the translation -t is to the right since it should be applied first. One way to remember
+where to put the components of r, u, and v is the following. We want r to become
+(1, 0, 0), so when multiplying a change of basis matrix with (1, 0, 0), we can see that
+the first row in the matrix must be the elements of r, since r · r = 1. Furthermore, the
+second row and the third row must consist of vectors that are perpendicular to r, i.e.,
+r · x = 0. When applying the same thinking also to u and v, we arrive at the change
+of basis matrix above. 
+---
+注意到，当将位移矩阵和变幻基底矩阵连接时，
+
+矩阵 -t 要放在右边。
+
+我们可以这样记忆，我们想要将 r 转变为 (1, 0, 0)
+
+我们通过 (1, 0, 0) 乘上基转换矩阵 就也能得到 r, 因为 r · r = 1
+
+而我们用基变幻矩阵得到的内容，一定与 r 垂直，即 r · x = 0. (这一段没看太懂)
+
+于是，我们能得到 4.20 的公式。
+
+### 4.1.7 Normal Transform
+正交变幻
+
+>* A single matrix can be used to consistently transform points, lines, triangles, and
+other geometry. The same matrix can also transform tangent vectors following along
+these lines or on the surfaces of triangles. However, this matrix cannot always be used
+to transform one important geometric property, the surface normal (and the vertex
+lighting normal). Figure 4.6 shows what can happen if this same matrix is used.
+---
+单个矩阵，可以用于改变 点，线，三角形 和其他几何体。
+
+能够通过线或者表面的三角形来改变切向量。
+
+然而，这种矩阵不能用于转换重要的几何体属性，表面法线（或者是顶点的光照法线。）
+
+4.6说明了这种情况。
+
+（即，矩阵变换，导致法线不再垂直于面）
+
+![4.6](pic/4/4.6.png)
+
+最左边的是一个三角形和它的法线。
+
+坐标是将x轴的坐标变为原来的 0.5 （缩放矩阵) 法线也做同样的处理
+
+最右边是正确的情况。
+
+>* Instead of multiplying by the matrix itself, 
+the proper method is to use the transpose of the matrix’s adjoint [227]. 
+Computation of the adjoint is described in our
+online linear algebra appendix. The adjoint is always guaranteed to exist. 
+The normal is not guaranteed to be of unit length after being transformed, 
+so typically needs to be normalized.
+---
+相比乘上相同的矩阵，正确的做法是使用矩阵的 伴随矩阵。
+
+伴随矩阵的算法在附录中有。
+
+伴随矩阵常常都是存在的。
+
+经过伴随矩阵变换的内容，长度是不能保证的。所以需要进行正交化。
+
+>* The traditional answer for transforming the normal is that the transpose of the
+inverse is computed [1794]. This method normally works. The full inverse is not
+necessary, however, and occasionally cannot be created. The inverse is the adjoint
+divided by the original matrix’s determinant. If this determinant is zero, the matrix
+is singular, and the inverse does not exist.
+---
+一般来说，求法线对应的矩阵变换，是计算这个矩阵的逆。
+
+这通常可行。
+
+但逆不一定存在，逆矩阵是 伴随矩阵除以原矩阵的 det(秩) 得到的
+
+如果一个矩阵的秩为0，那么就是奇异矩阵，就不存在逆矩阵。
+
+>* Even computing just the adjoint for a full 4 × 4 matrix can be expensive, 
+and is usually not necessary. 
+Since the normal is a vector, 
+translation will not affect it. 
+Furthermore, most modeling transforms are affine. 
+They do not change the w-component of the homogeneous coordinate passed in, 
+i.e., they do not perform projection. Under these (common) circumstances, 
+all that is needed for normal transformation is to
+compute the adjoint of the upper left 3 × 3 components.
+---
+即使是计算一个 4乘4 的伴随矩阵，代价是很高的。
+
+而且我们也没有必要全部算出来。
+
+因为法线是一条向量，所以移动变换（单纯移动位置）是不会对法线造成影响的。
+
+进一步说，大多数的模型变换是仿射变换（缩放 + 平移）。
+
+他们不会改变传入的齐次坐标中的 w 分量。
+
+即，他们不会做投影映射。在这些一般的情况下，
+
+法线变换需要做的，就是计算左上角 3乘3 的伴随矩阵。
+
+>* Often even this adjoint computation is not needed. Say we know the transform
+matrix is composed entirely of a concatenation of translations, rotations, and uniform
+scaling operations (no stretching or squashing). Translations do not affect the normal.
+The uniform scaling factors simply change the length of the normal. What is left is
+a series of rotations, which always yields a net rotation of some sort, nothing more.
+---
+甚至这一次伴随矩阵的变换也不需要算了。
+
+因为我们知道，矩阵可以由一系列的 平移，旋转，缩放组成（没有拉伸和压缩）。
+
+平移不影响法线，缩放只改变法线的长度。
+
+剩下的就是一系列的旋转矩阵。
+
+>* The transpose of the inverse can be used to transform normals. A rotation matrix is
+defined by the fact that its transpose is its inverse. Substituting to get the normal
+transform, two transposes (or two inverses) give the original rotation matrix. Putting
+it all together, the original transform itself can also be used directly to transform
+normals under these circumstances.
+---
+
+
 
 
 
