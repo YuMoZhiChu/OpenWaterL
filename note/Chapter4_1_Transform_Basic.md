@@ -763,7 +763,9 @@ of basis matrix above. 
 于是，我们能得到 4.20 的公式。
 
 ### 4.1.7 Normal Transform
-正交变幻
+法线变换
+
+[中文网站](https://blog.csdn.net/u012419410/article/details/42174839)
 
 >* A single matrix can be used to consistently transform points, lines, triangles, and
 other geometry. The same matrix can also transform tangent vectors following along
@@ -796,7 +798,7 @@ online linear algebra appendix. The adjoint is always guaranteed to exist.
 The normal is not guaranteed to be of unit length after being transformed, 
 so typically needs to be normalized.
 ---
-相比乘上相同的矩阵，正确的做法是使用矩阵的 伴随矩阵。
+相比乘上相同的矩阵，正确的做法是使用矩阵的 伴随矩阵 的转置矩阵。
 
 伴随矩阵的算法在附录中有。
 
@@ -862,6 +864,91 @@ transform, two transposes (or two inverses) give the original rotation matrix. P
 it all together, the original transform itself can also be used directly to transform
 normals under these circumstances.
 ---
+逆的转置可以用于计算法线的变换。
+
+一个旋转矩阵的转置，就是它的逆。
+
+我们直接使用旋转矩阵的转置的级联，就可以得到法线所需要的矩阵。
+
+>* Finally, fully renormalizing the normal produced is not always necessary. If only
+translations and rotations are concatenated together, the normal will not change length
+when transformed by the matrix, so no renormalizing is needed. If uniform scalings
+are also concatenated, the overall scale factor (if known, or extracted—Section 4.2.3)
+can be used to directly normalize the normals produced. For example, if we know
+that a series of scalings were applied that makes the object 5.2 times larger, then
+normals transformed directly by this matrix are renormalized by dividing them by
+5.2. Alternately, to create a normal transform matrix that would produce normalized
+results, the original matrix’s 3×3 upper left could be divided by this scale factor once.
+---
+最后，全部对法线进行校正的步骤通常不是必须的。
+
+当只有，平移和旋转发生时，因为法线的长度不会被改变，所以不需要校正法线。
+
+如果级联上了，统一缩放变换，那么我们可以用整体比例因子（提取出来的整体缩放比），来直接获得标准化的法线。
+
+比如，我们知道一系列的矩阵让物体变为 5.2 倍长，那么法线直接除以 5.2 就能得到标准法线。
+
+>* Note that normal transforms are not an issue in systems where, after transformation, the surface normal is derived from the triangle (e.g., using the cross product of
+the triangle’s edges). Tangent vectors are different than normals in nature, and are
+always directly transformed by the original matrix.
+---
+如果是通过三角形的边的叉计算出来的法线，和原生的自带法线是不一样的，只需要乘上原来的矩阵就好。
+
+### 4.1.8 Computation of Inverses
+逆的计算
+
+>* Inverses are needed in many cases, for example, when changing back and forth between
+coordinate systems. Depending on the available information about a transform, one
+of the following three methods of computing the inverse of a matrix can be used:
+---
+在很多情况下都需要逆运算。
+
+比如在2个坐标系之间来回切换。
+
+根据一个变换的信息，下面有3种方法来计算矩阵的逆
+
+>* If the matrix is a single transform or a sequence of simple transforms with
+given parameters, then the matrix can be computed easily by “inverting the
+parameters” and the matrix order. For example, if M = T(t)R(φ), then M^-1 =
+R(-φ)T(-t). This is simple and preserves the accuracy of the transform, which
+is important when rendering huge worlds [1381].
+---
+如果只是一个单个的位移变换，或者一组位移变换，那么矩阵就可以用参数的负数，加上相反的顺序
+
+来得到逆矩阵，比如：M = T(t)R(φ)， 那么 M^-1 = R(-φ)T(-t)
+
+这很简单，而且准确，在渲染巨大的场景时有很大的用处。
+
+>* If the matrix is known to be orthogonal, then M^-1 = M^T
+, i.e., the transpose is
+the inverse. Any sequence of rotations is a rotation, and so is orthogonal.
+---
+如果是正交矩阵，那么矩阵的逆就是它的转置。
+
+任何旋转矩阵的级联，都是正交矩阵。
+
+>* If nothing is known, then the adjoint method, Cramer’s rule, LU decomposition,
+or Gaussian elimination could be used to compute the inverse. Cramer’s rule
+and the adjoint method are generally preferable, as they have fewer branch operations; “if” tests are good to avoid on modern architectures. See Section 4.1.7
+on how to use the adjoint to invert transform normals.
+---
+如果什么都不知道，那么只能用 伴随矩阵, Carmer 法则, LU分解 或者 高斯消元法。
+
+Carmer 和 伴随矩阵法相对较好。
+
+>* The purpose of the inverse computation can also be taken into account when optimizing. For example, if the inverse is to be used for transforming vectors, then only the
+3 × 3 upper left part of the matrix normally needs to be inverted (see the previous
+section).
+---
+我们也可以根据计算的目的来进行优化，比如仿射变换，它的逆就只需要求左上角 3X3 的逆即可。
+
+
+
+
+
+
+
+
 
 
 
