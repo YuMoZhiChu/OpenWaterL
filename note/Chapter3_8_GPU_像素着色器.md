@@ -141,11 +141,11 @@ available is four or eight.
 
 比起 ps 结果发送到颜色缓冲和z缓冲，可以存储每个片元的值的一个值的集合，被称为一个渲染目标。
 
-Rt通常具有相同的 x，y维度，一些API允许不同的大小，但是只能大不能笑。
+Rt通常具有相同的 x，y维度，一些API允许不同的大小，但是只能大不能小。
 
 一些结构需要 RT 拥有相同的位深度，甚至可能要求相同的数据格式。
 
-根据CPU，RT通常是4个或者8个。
+根据GPU，RT通常是4个或者8个。
 
 >* Even with these limitations, MRT functionality is a powerful aid in performing
 rendering algorithms more efficiently. A single rendering pass could generate a color
@@ -222,7 +222,7 @@ ps 提供了沿着x轴或者y轴，任意插值的每像素的值变化。（指
 
 当ps请求一个梯度变量是，会返回相邻片元的对应插值。如图 3.15
 
-一个统一的核心（渲染核心），具有在同一时刻访问保存在不同线程中的邻近数据 这一能力（就是能访问到相邻的数据啦）
+一个统一的核心（渲染核心），具有在同一组访问保存在不同线程中的邻近数据 这一能力（就是能访问到相邻的数据啦）
 
 这使得ps能够计算各种梯度信息。
 
@@ -325,7 +325,7 @@ until triangles drawn earlier are processed.
 
 比如，ROV能够使得 ps 去编写它自己的混合方法，因为它能直接读写ROV，就不需要 merge 阶段了。（具体怎么回事，还很懵）
 
-但代价是，如果一个检测到一个无序的访问，ps 的调用可用会停止，等待之前的 三角形绘制被处理了。
+但代价是，如果一个检测到一个不在顺序中的访问，ps 的调用可用会停止，等待之前的 三角形绘制被处理了。
 
 
 
