@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../Core/CoreInclude.h"
+#include "../Demo/demo.h"
 
 // 可控的控制台
 class CConsole
@@ -26,7 +27,7 @@ public:
 	void Show(bool is_show);
 
 	int GetLine(char *buffer);
-	void ConsoleCommand();
+	DemoTitle ConsoleCommand();
 
 	static CConsole& Instance(void);
 };

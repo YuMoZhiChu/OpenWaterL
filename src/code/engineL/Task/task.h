@@ -13,6 +13,7 @@ public:
 	virtual void Run() = 0;
 };
 
+// IO 交互管理
 class CIOTaskManager
 {
 public:

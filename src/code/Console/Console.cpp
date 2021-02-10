@@ -2,6 +2,7 @@
 #include "../Core/Print.h"
 
 #include "Console.h"
+#include "StringHasher.h"
 
 // 控制台线程
 DWORD WINAPI CConsole::Process(void *arg)
@@ -42,13 +43,31 @@ DWORD WINAPI CConsole::Process(void *arg)
 }
 
 // 在主线程中被调用
-void CConsole::ConsoleCommand()
+DemoTitle CConsole::ConsoleCommand()
 {
 	char buf[256];
-	if (!GetLine(buf)) return;
+	if (!GetLine(buf)) return DemoTitle::Demo0_Zero;
 
-	Print("test\n");
+	// 交互系统，绘制不同的 demo
+	switch (_openwaterl_hash_compile_time(buf))
+	{
+	case "demo1"_openwaterl_hash_compile_time:
+		// 第1个demo, 显示绿色背景
+		Print("-->demo1 show : pure green show\n");
+		return DemoTitle::Demo1_Pure_Green;
+	case "demo2"_openwaterl_hash_compile_time:
+		// 第2个demo, 显示红色背景
+		Print("-->demo2 show : pure red show\n");
+		return DemoTitle::Demo2_Pure_Red;
+	default:
+		Print("Input code to show demo\n");
+		Print("demo1 : pure green show\n");
+		Print("demo2 : pure red show\n");
+		return DemoTitle::Demo0_Zero;
+	}
+	return DemoTitle::Demo0_Zero;
 
+	// Print("test\n");
 	/*std::string str_python(buf);
 	Print(str_python.c_str());*/
 	// TODO PyRun_SimpleString
