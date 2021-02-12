@@ -12,6 +12,12 @@ void DemoInit(DemoTitle demoTitle)
 	case DemoTitle::Demo2_Pure_Red:
 		Demo2_Init();
 		return;
+	case DemoTitle::Demo3_Triangle:
+		Demo3_Init();
+		return;
+	case DemoTitle::Demo4_Two_Triangle_IBO:
+		Demo4_Init();
+		return;
 	default:
 		break;
 	}
@@ -29,6 +35,12 @@ void DemoRender(DemoTitle demoTitle)
 	case DemoTitle::Demo2_Pure_Red:
 		Demo2_Render();
 		return;
+	case DemoTitle::Demo3_Triangle:
+		Demo3_Render();
+		return;
+	case DemoTitle::Demo4_Two_Triangle_IBO:
+		Demo4_Render();
+		return;
 	default:
 		break;
 	}
@@ -45,6 +57,12 @@ void DemoRelease(DemoTitle demoTitle)
 		return;
 	case DemoTitle::Demo2_Pure_Red:
 		Demo2_Release();
+		return;
+	case DemoTitle::Demo3_Triangle:
+		Demo3_Release();
+		return;
+	case DemoTitle::Demo4_Two_Triangle_IBO:
+		Demo4_Release();
 		return;
 	default:
 		break;

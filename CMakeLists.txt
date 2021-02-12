@@ -124,6 +124,14 @@ file(GLOB_RECURSE NOTE_MARKDOWNFILE
 	"note/*.md"
 )
 
+# 接入 shader 文件
+# vs 顶点着色器文件
+# fs 片段着色器文件
+# gs 几何着色器文件
+file(GLOB_RECURSE SHADER_FILE
+	"workspace/shader_code/*.[vfg]s"
+)
+
 message("#### all CPP files:")
 foreach(F ${CPPFILE})
      message(${F})
@@ -132,7 +140,7 @@ message("#### all H files:")
 foreach(F ${HEADFILE})
      message(${F})
 endforeach(F)
-add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE} ${NOTE_MARKDOWNFILE})
+add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE} ${NOTE_MARKDOWNFILE} ${SHADER_FILE})
 
 # Make WorkDirectory and Set it
 set_target_properties(OpenWaterL PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/workspace")
@@ -174,6 +182,8 @@ foreach(F ${NOTE_MARKDOWNFILE})
      message(${F})
 endforeach(F)
 source_group("_markdownNote" FILES ${NOTE_MARKDOWNFILE})
+
+source_group("_shaders" FILES ${SHADER_FILE})
 
 # A "debug", "optimized", or "general" keyword indicates that the library immediately following 
 # it is to be used only for the corresponding build configuration.
