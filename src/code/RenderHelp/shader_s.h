@@ -29,8 +29,17 @@ public:
 			// open files
 			vShaderFile.open(vertexPath);
 			fShaderFile.open(fragmentPath);
-			std::wstringstream vShaderStream, fShaderStream;
+			std::stringstream vShaderStream, fShaderStream;
 			// read file's buffer contents into streams
+
+			// utf-8 with boom 的特殊处理, 读前面3个即可
+			vShaderFile.get();
+			vShaderFile.get();
+			vShaderFile.get();
+			fShaderFile.get();
+			fShaderFile.get();
+			fShaderFile.get();
+
 			vShaderStream << vShaderFile.rdbuf();
 			fShaderStream << fShaderFile.rdbuf();
 			// close file handlers
