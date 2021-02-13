@@ -1,35 +1,38 @@
 ﻿// 贴2张纹理
-#include "demo6_texture.h"
+#include "demo7_transform.h"
 
 // 如果是 extern, 就直接 #include 即可
 // #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-void Demo6_Init()
+void Demo7_Init()
 {
-	Demo6_Texture_NSP::Demo_Instance().Init();
+	Demo7_Transform_NSP::Demo_Instance().Init();
 }
 
-void Demo6_Render()
+void Demo7_Render()
 {
-	Demo6_Texture_NSP::Demo_Instance().Render();
+	Demo7_Transform_NSP::Demo_Instance().Render();
 }
 
-void Demo6_Release()
+void Demo7_Release()
 {
-	Demo6_Texture_NSP::Demo_Instance().Release();
+	Demo7_Transform_NSP::Demo_Instance().Release();
 }
 
-namespace Demo6_Texture_NSP
+namespace Demo7_Transform_NSP
 {
 	// 渲染的三角形顶点，颜色，纹理uv坐标数据
 	const float vertices[] = {
-		// positions          // colors           // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+		// positions          // texture coords
+		 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 
 	const unsigned int indices[] = { // 注意索引从0开始! 
@@ -48,7 +51,7 @@ namespace Demo6_Texture_NSP
 		// build and compile our shader program
 		// ------------------------------------
 		// 建立 Shader Program
-		shaderProgramPtr = std::make_unique<Shader>("shader_code/demo6_texture.vs", "shader_code/demo6_texture.fs");
+		shaderProgramPtr = std::make_unique<Shader>("shader_code/demo7_transform.vs", "shader_code/demo7_transform.fs");
 
 		// 渲染相关初始化
 		glGenVertexArrays(1, &VAO);
@@ -64,16 +67,13 @@ namespace Demo6_Texture_NSP
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		// 设置顶点属性指针，分别是 位置，颜色，uv坐标
+		// 设置顶点属性指针，分别是 位置, uv坐标
 		// position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		// color attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
 		// texture coord attribute
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
 		// 解绑VBO
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// 解绑VAO
@@ -153,8 +153,17 @@ namespace Demo6_Texture_NSP
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
+		// create transformations
+		glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+		// 右手系，在这里 Z 是被归一化到 [-1,1]，并没有大小的作用
+		transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
 		// draw our first triangle
 		shaderProgramPtr->use();
+		// 绑定一个矩阵
+		shaderProgramPtr->setMat4("transform", transform);
+
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}

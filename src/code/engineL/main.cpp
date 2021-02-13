@@ -10,6 +10,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 
 #include "Task/task.h"
@@ -81,16 +85,16 @@ int main()
 
 	//// build and compile our shader program
 	//// ------------------------------------
-	//Shader ourShader("shader_code/texture.vs", "shader_code/texture.fs"); // you can name your shader files however you like
+	//Shader ourShader("shader_code/demo7_transform.vs", "shader_code/demo7_transform.fs"); // you can name your shader files however you like
 
 	//// set up vertex data (and buffer(s)) and configure vertex attributes
 	//// ------------------------------------------------------------------
 	//float vertices[] = {
-	//	// positions          // colors           // texture coords
-	//	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-	//	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-	//	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-	//	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+	//	// positions          // texture coords
+	//	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+	//	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+	//	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+	//	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
 	//};
 	//unsigned int indices[] = {
 	//	0, 1, 3, // first triangle
@@ -111,14 +115,16 @@ int main()
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//// position attribute
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	//glEnableVertexAttribArray(0);
-	//// color attribute
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
 	//// texture coord attribute
-	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	//glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+
+	//// 解绑VBO
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//// 解绑VAO
+	//glBindVertexArray(0);
 
 
 	//// load and create a texture 
@@ -177,7 +183,6 @@ int main()
 	//// -------------------------------------------------------------------------------------------
 	//ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
 	//// either set it manually like so:
-	//// glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
 	//ourShader.setInt("texture1", 0);
 	//// or set it via the texture class
 	//ourShader.setInt("texture2", 1);
@@ -194,6 +199,29 @@ int main()
 		processInput(window);
 
 		// render
+		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
+
+		//// bind textures on corresponding texture units
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, texture1);
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, texture2);
+
+		//// create transformations
+		//glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+		//// 右手系
+		//transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+		//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		//// get matrix's uniform location and set matrix
+		//ourShader.use();
+		//unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+		//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+		//// render container
+		//glBindVertexArray(VAO);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// 对应 Demo 的渲染
 		DemoTitle temp = CConsoleInstance().ConsoleCommand();

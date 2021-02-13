@@ -153,6 +153,7 @@ namespace Demo4_Two_Triangle_IBO_NSP
 		// ------------------------------------------------------------------------
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
 
 		// glDeleteProgram frees the memory and invalidates the name associated with the program object specified by program.
 		// This command effectively undoes the effects of a call to glCreateProgram.

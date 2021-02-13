@@ -74,6 +74,10 @@ include_directories(${SPDLOG_SOURCE})
 set(STB_SOURCE "${CMAKE_SOURCE_DIR}/external/stb/")
 include_directories(${STB_SOURCE})
 
+# add glm
+set(STB_SOURCE "${CMAKE_SOURCE_DIR}/external/glm-0.9.9.7/glm/")
+include_directories(${STB_SOURCE})
+
 # add fbxsdk
 set(FBXSDK_SOURCE "${CMAKE_SOURCE_DIR}/external/fbx/include")
 include_directories(${FBXSDK_SOURCE})

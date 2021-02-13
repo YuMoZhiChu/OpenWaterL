@@ -75,6 +75,10 @@ DemoTitle CConsole::ConsoleCommand()
 		// 第6个demo, 显示 2张纹理，并做混合
 		Print("-->demo6 show : Two Merge Texture\n");
 		return DemoTitle::Demo6_Texture;
+	case "demo7"_openwaterl_hash_compile_time:
+		// 第7个demo, 引入 glm 库，做简单的矩阵变换
+		Print("-->demo7 show : Simple Transform Show\n");
+		return DemoTitle::Demo7_Transform;
 	default:
 		Print("Input code to show demo\n");
 		Print("demo1 : pure green show\n");
@@ -82,7 +86,8 @@ DemoTitle CConsole::ConsoleCommand()
 		Print("demo3 : A Triangle\n");
 		Print("demo4 : Two Triangle with IBO\n");
 		Print("demo5 : One Changing Triangle\n");
-		Print("-->demo6 show : Two Merge Texture\n");
+		Print("demo6 show : Two Merge Texture\n");
+		Print("demo7 show : Simple Transform Show\n");
 		return DemoTitle::Demo0_Zero;
 	}
 	return DemoTitle::Demo0_Zero;

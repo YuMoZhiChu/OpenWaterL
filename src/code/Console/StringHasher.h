@@ -6,8 +6,8 @@
 
 typedef std::uint16_t _openwaterl_hash_t;
 
-constexpr _openwaterl_hash_t _openwaterl_hash_prime = 0x100000001B3ull;
-constexpr _openwaterl_hash_t _openwaterl_hash_basis = 0xCBF29CE484222325ull;
+constexpr _openwaterl_hash_t _openwaterl_hash_prime = _openwaterl_hash_t(0x100000001B3ull);
+constexpr _openwaterl_hash_t _openwaterl_hash_basis = _openwaterl_hash_t(0xCBF29CE484222325ull);
 
 // 函数写法，const char* str 转换为 uint16_t
 _openwaterl_hash_t _openwaterl_hash_(const char* str)
