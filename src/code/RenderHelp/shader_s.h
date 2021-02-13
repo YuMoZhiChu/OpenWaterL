@@ -29,7 +29,7 @@ public:
 			// open files
 			vShaderFile.open(vertexPath);
 			fShaderFile.open(fragmentPath);
-			std::stringstream vShaderStream, fShaderStream;
+			std::wstringstream vShaderStream, fShaderStream;
 			// read file's buffer contents into streams
 			vShaderStream << vShaderFile.rdbuf();
 			fShaderStream << fShaderFile.rdbuf();
@@ -44,7 +44,7 @@ public:
 		{
 			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 		}
-		const char* vShaderCode = vertexCode.c_str();
+		const char * vShaderCode = vertexCode.c_str();
 		const char * fShaderCode = fragmentCode.c_str();
 		// 2. compile shaders
 		unsigned int vertex, fragment;
@@ -73,6 +73,14 @@ public:
 	void use()
 	{
 		glUseProgram(ID);
+	}
+	// delete the shader program
+	// ------------------------------------------------------------------------
+	void deleteProgram()
+	{
+		// glDeleteProgram frees the memory and invalidates the name associated with the program object specified by program.
+		// This command effectively undoes the effects of a call to glCreateProgram.
+		glDeleteProgram(ID);
 	}
 	// utility uniform functions
 	// ------------------------------------------------------------------------

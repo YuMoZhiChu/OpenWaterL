@@ -70,6 +70,10 @@ message("${GLAD_SOURCE}")
 set(SPDLOG_SOURCE "${CMAKE_SOURCE_DIR}/external/spdlog/")
 include_directories(${SPDLOG_SOURCE})
 
+# add stb
+set(STB_SOURCE "${CMAKE_SOURCE_DIR}/external/stb/")
+include_directories(${STB_SOURCE})
+
 # add fbxsdk
 set(FBXSDK_SOURCE "${CMAKE_SOURCE_DIR}/external/fbx/include")
 include_directories(${FBXSDK_SOURCE})

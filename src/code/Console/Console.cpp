@@ -64,15 +64,20 @@ DemoTitle CConsole::ConsoleCommand()
 		Print("-->demo3 show : A Triangle\n");
 		return DemoTitle::Demo3_Triangle;
 	case "demo4"_openwaterl_hash_compile_time:
-		// 第4个demo, 显示红色背景
+		// 第4个demo, 显示 2个三角形, 使用了 IBO
 		Print("-->demo4 show : Two Triangle with IBO\n");
 		return DemoTitle::Demo4_Two_Triangle_IBO;
+	case "demo5"_openwaterl_hash_compile_time:
+		// 第5个demo, 显示 1个变色的三角形, 使用了 shader_s
+		Print("-->demo5 show : One Changing Triangle\n");
+		return DemoTitle::Demo5_Changing_Triangle;
 	default:
 		Print("Input code to show demo\n");
 		Print("demo1 : pure green show\n");
 		Print("demo2 : pure red show\n");
 		Print("demo3 : A Triangle\n");
 		Print("demo4 : Two Triangle with IBO\n");
+		Print("demo5 : One Changing Triangle\n");
 		return DemoTitle::Demo0_Zero;
 	}
 	return DemoTitle::Demo0_Zero;
