@@ -32,13 +32,11 @@ public:
 			std::stringstream vShaderStream, fShaderStream;
 			// read file's buffer contents into streams
 
-			// utf-8 with boom 的特殊处理, 读前面3个即可
-			vShaderFile.get();
-			vShaderFile.get();
-			vShaderFile.get();
-			fShaderFile.get();
-			fShaderFile.get();
-			fShaderFile.get();
+			// utf-8 with boom 的特殊处理, 跳过前面3个即可, shader 的保存格式统一为 utf-8 with boom
+			vShaderFile.seekg(3);
+			fShaderFile.seekg(3);
+			//vShaderFile.get(); *3
+			//fShaderFile.get(); *3
 
 			vShaderStream << vShaderFile.rdbuf();
 			fShaderStream << fShaderFile.rdbuf();

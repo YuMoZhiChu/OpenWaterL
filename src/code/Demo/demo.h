@@ -5,6 +5,7 @@
 #include "demo3_triganle.h"
 #include "demo4_two_triganle_IBO.h"
 #include "demo5_changing_triganle.h"
+#include "demo6_texture.h"
 // 对应每个 demo 的变量
 enum DemoTitle
 {
@@ -14,6 +15,7 @@ enum DemoTitle
 	Demo3_Triangle,
 	Demo4_Two_Triangle_IBO,
 	Demo5_Changing_Triangle,
+	Demo6_Texture,
 };
 
 void DemoInit(DemoTitle demoTitle);

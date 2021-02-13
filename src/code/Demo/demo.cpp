@@ -21,6 +21,9 @@ void DemoInit(DemoTitle demoTitle)
 	case DemoTitle::Demo5_Changing_Triangle:
 		Demo5_Init();
 		return;
+	case DemoTitle::Demo6_Texture:
+		Demo6_Init();
+		return;
 	default:
 		break;
 	}
@@ -47,6 +50,9 @@ void DemoRender(DemoTitle demoTitle)
 	case DemoTitle::Demo5_Changing_Triangle:
 		Demo5_Render();
 		return;
+	case DemoTitle::Demo6_Texture:
+		Demo6_Render();
+		return;
 	default:
 		break;
 	}
@@ -72,6 +78,9 @@ void DemoRelease(DemoTitle demoTitle)
 		return;
 	case DemoTitle::Demo5_Changing_Triangle:
 		Demo5_Release();
+		return;
+	case DemoTitle::Demo6_Texture:
+		Demo6_Release();
 		return;
 	default:
 		break;

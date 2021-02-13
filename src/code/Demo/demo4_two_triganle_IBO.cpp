@@ -1,4 +1,4 @@
-﻿// 画一个三角形
+﻿// 画2个三角形
 #include "demo4_two_triganle_IBO.h"
 
 void Demo4_Init()
@@ -26,7 +26,7 @@ namespace Demo4_Two_Triangle_IBO_NSP
 		-0.5f, 0.5f, 0.0f   // 左上角
 	};
 
-	unsigned int indices[] = { // 注意索引从0开始! 
+	const unsigned int indices[] = { // 注意索引从0开始! 
 		0, 1, 3, // 第一个三角形
 		1, 2, 3  // 第二个三角形
 	};
@@ -144,6 +144,11 @@ namespace Demo4_Two_Triangle_IBO_NSP
 
 	void Demo::Release()
 	{
+		// 线框模式，要设置成默认的
+		// uncomment this call to draw in wireframe polygons.
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
 		// optional: de-allocate all resources once they've outlived their purpose:
 		// ------------------------------------------------------------------------
 		glDeleteVertexArrays(1, &VAO);

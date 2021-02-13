@@ -115,7 +115,7 @@ namespace Demo3_Triangle_NSP
 
 		// 线框模式
 		// uncomment this call to draw in wireframe polygons.
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	void Demo::Render()
