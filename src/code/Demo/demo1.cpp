@@ -3,6 +3,11 @@
 
 void Demo1_Init()
 {
+	//// 测试，获取最大的 uniform 支持大小
+	//int a, b, c;
+	//glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &a);
+	//glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &b);
+	//glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &c);
 }
 
 void Demo1_Render()

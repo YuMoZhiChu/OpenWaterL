@@ -1,5 +1,5 @@
-﻿// 简单的矩阵变化
-#include "demo7_transform.h"
+﻿// 简单的坐标系应用
+#include "demo8_coordinate_systems.h"
 
 // 如果是 extern, 就直接 #include 即可
 // #define STB_IMAGE_IMPLEMENTATION
@@ -9,22 +9,22 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-void Demo7_Init()
+void Demo8_Init()
 {
-	Demo7_Transform_NSP::Demo_Instance().Init();
+	Demo8_Coordinate_Systems_NSP::Demo_Instance().Init();
 }
 
-void Demo7_Render()
+void Demo8_Render()
 {
-	Demo7_Transform_NSP::Demo_Instance().Render();
+	Demo8_Coordinate_Systems_NSP::Demo_Instance().Render();
 }
 
-void Demo7_Release()
+void Demo8_Release()
 {
-	Demo7_Transform_NSP::Demo_Instance().Release();
+	Demo8_Coordinate_Systems_NSP::Demo_Instance().Release();
 }
 
-namespace Demo7_Transform_NSP
+namespace Demo8_Coordinate_Systems_NSP
 {
 	// 渲染的三角形顶点，颜色，纹理uv坐标数据
 	const float vertices[] = {
@@ -51,7 +51,7 @@ namespace Demo7_Transform_NSP
 		// build and compile our shader program
 		// ------------------------------------
 		// 建立 Shader Program
-		shaderProgramPtr = std::make_unique<Shader>("shader_code/demo7_transform.vs", "shader_code/demo7_transform.fs");
+		shaderProgramPtr = std::make_unique<Shader>("shader_code/Demo8_transform.vs", "shader_code/Demo8_transform.fs");
 
 		// 渲染相关初始化
 		glGenVertexArrays(1, &VAO);
