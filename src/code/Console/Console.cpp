@@ -79,6 +79,14 @@ DemoTitle CConsole::ConsoleCommand()
 		// 第7个demo, 引入 glm 库，做简单的矩阵变换
 		Print("-->demo7 show : Simple Transform Show\n");
 		return DemoTitle::Demo7_Transform;
+	case "demo8"_openwaterl_hash_compile_time:
+		// 第8个demo, 引入 MVP 矩阵，开始用透视投影
+		Print("-->demo8 show : Simple MVP Show\n");
+		return DemoTitle::Demo8_Coordinate_Systems;
+	case "demo9"_openwaterl_hash_compile_time:
+		// 第9个demo, 简单的冯氏光照
+		Print("-->demo9 show : Simple Phong Show\n");
+		return DemoTitle::Demo9_Simple_Phong;
 	default:
 		Print("Input code to show demo\n");
 		Print("demo1 : pure green show\n");
@@ -86,8 +94,10 @@ DemoTitle CConsole::ConsoleCommand()
 		Print("demo3 : A Triangle\n");
 		Print("demo4 : Two Triangle with IBO\n");
 		Print("demo5 : One Changing Triangle\n");
-		Print("demo6 show : Two Merge Texture\n");
-		Print("demo7 show : Simple Transform Show\n");
+		Print("demo6 : Two Merge Texture\n");
+		Print("demo7 : Simple Transform Show\n");
+		Print("demo8 : Simple MVP Show\n");
+		Print("demo9 : Simple Phong Show\n");
 		return DemoTitle::Demo0_Zero;
 	}
 	return DemoTitle::Demo0_Zero;

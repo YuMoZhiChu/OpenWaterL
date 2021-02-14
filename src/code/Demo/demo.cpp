@@ -27,6 +27,12 @@ void DemoInit(DemoTitle demoTitle)
 	case DemoTitle::Demo7_Transform:
 		Demo7_Init();
 		return;
+	case DemoTitle::Demo8_Coordinate_Systems:
+		Demo8_Init();
+		return;
+	case DemoTitle::Demo9_Simple_Phong:
+		Demo9_Init();
+		return;
 	default:
 		break;
 	}
@@ -59,6 +65,12 @@ void DemoRender(DemoTitle demoTitle)
 	case DemoTitle::Demo7_Transform:
 		Demo7_Render();
 		return;
+	case DemoTitle::Demo8_Coordinate_Systems:
+		Demo8_Render();
+		return;
+	case DemoTitle::Demo9_Simple_Phong:
+		Demo9_Render();
+		return;
 	default:
 		break;
 	}
@@ -90,6 +102,12 @@ void DemoRelease(DemoTitle demoTitle)
 		return;
 	case DemoTitle::Demo7_Transform:
 		Demo7_Release();
+		return;
+	case DemoTitle::Demo8_Coordinate_Systems:
+		Demo8_Release();
+		return;
+	case DemoTitle::Demo9_Simple_Phong:
+		Demo9_Release();
 		return;
 	default:
 		break;

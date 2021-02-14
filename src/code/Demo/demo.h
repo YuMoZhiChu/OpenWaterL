@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "../engineL/openwater.h"
+
 #include "demo1.h"
 #include "demo2.h"
 #include "demo3_triganle.h"
@@ -7,6 +9,8 @@
 #include "demo5_changing_triganle.h"
 #include "demo6_texture.h"
 #include "demo7_transform.h"
+#include "demo8_coordinate_systems.h"
+#include "demo9_simple_phong.h"
 // 对应每个 demo 的变量
 enum DemoTitle
 {
@@ -18,6 +22,8 @@ enum DemoTitle
 	Demo5_Changing_Triangle,
 	Demo6_Texture,
 	Demo7_Transform,
+	Demo8_Coordinate_Systems,
+	Demo9_Simple_Phong,
 };
 
 void DemoInit(DemoTitle demoTitle);

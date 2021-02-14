@@ -8,25 +8,24 @@
 
 #include "../RenderHelp/shader_s.h"
 
-void Demo8_Init();
+void Demo9_Init();
 
-void Demo8_Render();
+void Demo9_Render();
 
-void Demo8_Release();
+void Demo9_Release();
 
 // 搞成作用域，这样就可以统一写了
-namespace Demo8_Coordinate_Systems_NSP
+namespace Demo9_Simple_Phong_NSP
 {
 	// 用一个类来包括
 	// 一般来说，都做成一个单例
 	class Demo
 	{
 		// Shader 的指针
-		std::unique_ptr<Shader> shaderProgramPtr;
+		std::unique_ptr<Shader> lightingShaderPtr;
+		std::unique_ptr<Shader> lightCubeShaderPtr;
 		// VAO, VBO
-		unsigned int VAO, VBO;
-		// 纹理 1，2
-		unsigned int texture1, texture2;
+		unsigned int cubeVAO, lightCubeVAO, VBO;
 	public:
 		static Demo& Instance(void);
 		void Init();
