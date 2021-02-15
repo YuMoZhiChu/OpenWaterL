@@ -25,6 +25,7 @@
 #include "../Demo/demo.h"
 #include "../RenderHelp/shader_s.h"
 #include "../RenderHelp/camera.h"
+#include "../RenderHelp/misc.h"
 
 #include "FBX/FBXTest.h"
 
@@ -97,88 +98,98 @@ int main()
 	// 选择demo，第一次默认是 0
 	DemoTitle demoTitle = CConsoleInstance().ConsoleCommand();
 
-	//// configure global opengl state
-	//// -----------------------------
-	//glEnable(GL_DEPTH_TEST);
+	// configure global opengl state
+	// -----------------------------
+	glEnable(GL_DEPTH_TEST);
 
-	//// build and compile our shader zprogram
-	//// ------------------------------------
-	//Shader lightingShader("shader_code/demo9_basic_lighting.vs", "shader_code/demo9_basic_lighting.fs");
-	//Shader lightCubeShader("shader_code/demo9_light_cube.vs", "shader_code/demo9_light_cube.fs");
-
-
-	//// set up vertex data (and buffer(s)) and configure vertex attributes
-	//// ------------------------------------------------------------------
-	//float vertices[] = {
-	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	//	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	//	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-	//	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-	//	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	//	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	//	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	//	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	//	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	//	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	//	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	//	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	//	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-	//};
-	//// first, configure the cube's VAO (and VBO)
-	//unsigned int VBO, cubeVAO;
-	//glGenVertexArrays(1, &cubeVAO);
-	//glGenBuffers(1, &VBO);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//glBindVertexArray(cubeVAO);
-
-	//// position attribute
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-	//// normal attribute
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
+	// build and compile our shader zprogram
+	// ------------------------------------
+	Shader lightingShader("shader_code/demo10_lighting_maps.vs", "shader_code/demo10_lighting_maps.fs");
+	Shader lightCubeShader("shader_code/demo10_light_cube.vs", "shader_code/demo10_light_cube.fs");
 
 
-	//// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
-	//unsigned int lightCubeVAO;
-	//glGenVertexArrays(1, &lightCubeVAO);
-	//glBindVertexArray(lightCubeVAO);
+	// set up vertex data (and buffer(s)) and configure vertex attributes
+	// ------------------------------------------------------------------
+	float vertices[] = {
+		// positions          // normals           // texture coords
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//// note that we update the lamp's position attribute's stride to reflect the updated buffer data
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+	};
+	// first, configure the cube's VAO (and VBO)
+	unsigned int VBO, cubeVAO;
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &VBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindVertexArray(cubeVAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+	unsigned int lightCubeVAO;
+	glGenVertexArrays(1, &lightCubeVAO);
+	glBindVertexArray(lightCubeVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// load textures (we now use a utility function to keep the code more organized)
+	// -----------------------------------------------------------------------------
+	unsigned int diffuseMap = loadTexture("textures/container2.png");
+	unsigned int specularMap = loadTexture("textures/container2_specular.png");
+
+	// shader configuration
+	// --------------------
+	lightingShader.use();
+	lightingShader.setInt("material.diffuse", 0);
+	lightingShader.setInt("material.specular", 1);
 
 	// render loop
 	// -----------
@@ -204,10 +215,16 @@ int main()
 
 		//// be sure to activate shader when setting uniforms/drawing objects
 		//lightingShader.use();
-		//lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-		//lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		//lightingShader.setVec3("lightPos", lightPos);
+		//lightingShader.setVec3("light.position", lightPos);
 		//lightingShader.setVec3("viewPos", GlobalCameraInstance().Ptr->Position);
+
+		//// light properties
+		//lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		//lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		//lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		//// material properties
+		//lightingShader.setFloat("material.shininess", 64.0f);
 
 		//// view/projection transformations
 		//glm::mat4 projection = glm::perspective(glm::radians(GlobalCameraInstance().Ptr->Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -218,6 +235,13 @@ int main()
 		//// world transformation
 		//glm::mat4 model = glm::mat4(1.0f);
 		//lightingShader.setMat4("model", model);
+
+		//// bind diffuse map
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		//// bind specular map
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, specularMap);
 
 		//// render the cube
 		//glBindVertexArray(cubeVAO);

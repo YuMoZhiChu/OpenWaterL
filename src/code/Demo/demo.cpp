@@ -33,6 +33,9 @@ void DemoInit(DemoTitle demoTitle)
 	case DemoTitle::Demo9_Simple_Phong:
 		Demo9_Init();
 		return;
+	case DemoTitle::Demo10_Material:
+		Demo10_Init();
+		return;
 	default:
 		break;
 	}
@@ -71,6 +74,9 @@ void DemoRender(DemoTitle demoTitle)
 	case DemoTitle::Demo9_Simple_Phong:
 		Demo9_Render();
 		return;
+	case DemoTitle::Demo10_Material:
+		Demo10_Render();
+		return;
 	default:
 		break;
 	}
@@ -108,6 +114,9 @@ void DemoRelease(DemoTitle demoTitle)
 		return;
 	case DemoTitle::Demo9_Simple_Phong:
 		Demo9_Release();
+		return;
+	case DemoTitle::Demo10_Material:
+		Demo10_Release();
 		return;
 	default:
 		break;
