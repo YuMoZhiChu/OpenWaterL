@@ -8,6 +8,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+// read file via ASSIMP
+Assimp::Importer importer;
+
 // 第一次使用前 要加一个 define，就会有定义
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

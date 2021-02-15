@@ -180,3 +180,14 @@ cmake-build-*/
 !external/fbx/lib/x86/release
 !external/fbx/lib/x64/debug
 !external/fbx/lib/x64/release
+assimp/revision.h
+assimp/include/assimp/config.h
+assimp/contrib/zlib/zlib.pc
+assimp/contrib/zlib/zconf.h
+assimp/contrib/zlib/CTestTestfile.cmake
+assimp/assimpTargets.cmake
+assimp/assimpTargets-release.cmake
+assimp/assimpTargets-debug.cmake
+assimp/assimp.pc
+assimp/assimp-config.cmake
+assimp/assimp-config-version.cmake

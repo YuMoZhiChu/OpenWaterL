@@ -51,6 +51,7 @@ set(GLFW_SOURCE "${CMAKE_SOURCE_DIR}/external/glfw/")
 add_subdirectory(${GLFW_SOURCE} glfw3)
 include_directories(${GLFW_SOURCE}/include)
 # link different lib according to different build type
+# TODO 这个究竟是什么意思
 set(GLFW3 optimized glfw3 debug "glfw3${CMAKE_DEBUG_POSTFIX}")
 
 # add glad lib
@@ -61,10 +62,24 @@ set(GLAD optimized glad debug "glad${CMAKE_DEBUG_POSTFIX}")
 
 set(OPENGL_LIBS ${GLFW3} ${GLAD} opengl32)
 
+# 打印我们包含的 OpenGL 库
 message("#### All OpenGL Libs:")
 message("${OPENGL_LIBS}")
 message("#### glad source:")
 message("${GLAD_SOURCE}")
+
+# add assimp (5.0.1)
+set(ASSIMP_SOURCE "${CMAKE_SOURCE_DIR}/external/assimp-5.0.1/assimp-5.0.1/")
+# assimp 在 external 中的位置
+include_directories(${ASSIMP_SOURCE}/include)
+# 因为要建立关联, 所以增加一个 assimp 文件夹
+add_subdirectory(${ASSIMP_SOURCE} assimp)
+# 新建依赖后, 会在 assimp 下生成 一个 config.h 需要把它加载进 include 中
+include_directories(${CMAKE_SOURCE_DIR}/assimp/include)
+# assimp 使用的 lib 会生成的位置, 以及生成的库, 这里先做特殊处理, 详细参考 assimp 生成出来的 lib 的格式, 和 cmake 中的 ASSIMP_MSVC_VERSION
+set(ASSIMP_LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib/Debug/)
+link_directories(${ASSIMP_LIBRARY_OUTPUT_PATH})
+set(ASSIMP_LIBS "assimp-vc141-mt_d.lib" "zlibstaticd.lib" "IrrXML_d.lib")
 
 # add spdlog
 set(SPDLOG_SOURCE "${CMAKE_SOURCE_DIR}/external/spdlog/")
@@ -140,14 +155,15 @@ file(GLOB_RECURSE SHADER_FILE
 	"workspace/shader_code/*.[vfg]s"
 )
 
-message("#### all CPP files:")
-foreach(F ${CPPFILE})
-     message(${F})
-endforeach(F)
-message("#### all H files:")
-foreach(F ${HEADFILE})
-     message(${F})
-endforeach(F)
+# 输出文件校验
+# message("#### all CPP files:")
+# foreach(F ${CPPFILE})
+#      message(${F})
+# endforeach(F)
+# message("#### all H files:")
+# foreach(F ${HEADFILE})
+#      message(${F})
+# endforeach(F)
 add_executable(OpenWaterL ${CPPFILE} ${HEADFILE} ${MARKDOWNFILE} ${NOTE_MARKDOWNFILE} ${SHADER_FILE})
 
 # Make WorkDirectory and Set it
@@ -178,17 +194,19 @@ macro(source_group_by_dir source_files)
 endmacro(source_group_by_dir)
 source_group_by_dir(all_files)
 
-message("#### all md files:")
-foreach(F ${MARKDOWNFILE})
-     message(${F})
-endforeach(F)
+# 输出文件校验
+# message("#### all md files:")
+# foreach(F ${MARKDOWNFILE})
+#      message(${F})
+# endforeach(F)
 #设置 vs sln filter的接口
 source_group("_markdownDoc" FILES ${MARKDOWNFILE})
 
-message("#### all note - md files:")
-foreach(F ${NOTE_MARKDOWNFILE})
-     message(${F})
-endforeach(F)
+# 输出文件校验
+# message("#### all note - md files:")
+# foreach(F ${NOTE_MARKDOWNFILE})
+#      message(${F})
+# endforeach(F)
 source_group("_markdownNote" FILES ${NOTE_MARKDOWNFILE})
 
 source_group("_shaders" FILES ${SHADER_FILE})
@@ -200,6 +218,9 @@ source_group("_shaders" FILES ${SHADER_FILE})
 # Libraries specified as "general" (or without any keyword) are treated as if specified for both "debug" and "optimized"
 target_link_libraries(OpenWaterL ${OPENGL_LIBS})
 target_link_libraries(OpenWaterL ${FBX_LIBS})
+target_link_libraries(OpenWaterL ${ASSIMP_LIBS})
 
 add_dependencies(OpenWaterL glfw)
 # add_dependencies(OpenWaterL glad) # 依赖默认已有
+# 依赖于 assimp
+add_dependencies(OpenWaterL assimp)
