@@ -36,6 +36,9 @@ void DemoInit(DemoTitle demoTitle)
 	case DemoTitle::Demo10_Material:
 		Demo10_Init();
 		return;
+	case DemoTitle::Demo11_Multiple_Lights:
+		Demo11_Init();
+		return;
 	default:
 		break;
 	}
@@ -77,6 +80,9 @@ void DemoRender(DemoTitle demoTitle)
 	case DemoTitle::Demo10_Material:
 		Demo10_Render();
 		return;
+	case DemoTitle::Demo11_Multiple_Lights:
+		Demo11_Render();
+		return;
 	default:
 		break;
 	}
@@ -117,6 +123,9 @@ void DemoRelease(DemoTitle demoTitle)
 		return;
 	case DemoTitle::Demo10_Material:
 		Demo10_Release();
+		return;
+	case DemoTitle::Demo11_Multiple_Lights:
+		Demo11_Release();
 		return;
 	default:
 		break;

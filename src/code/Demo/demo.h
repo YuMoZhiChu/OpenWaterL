@@ -12,6 +12,7 @@
 #include "demo8_coordinate_systems.h"
 #include "demo9_simple_phong.h"
 #include "demo10_material.h"
+#include "demo11_multiple_lights.h"
 // 对应每个 demo 的变量
 enum DemoTitle
 {
@@ -26,6 +27,7 @@ enum DemoTitle
 	Demo8_Coordinate_Systems,
 	Demo9_Simple_Phong,
 	Demo10_Material,
+	Demo11_Multiple_Lights,
 };
 
 void DemoInit(DemoTitle demoTitle);

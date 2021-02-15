@@ -91,6 +91,10 @@ DemoTitle CConsole::ConsoleCommand()
 		// 第10个demo, 简单的材质
 		Print("-->demo10 show : Simple Material Show\n");
 		return DemoTitle::Demo10_Material;
+	case "demo11"_openwaterl_hash_compile_time:
+		// 第11个demo, 多光源场景
+		Print("-->demo11 show : Multiple Lights\n");
+		return DemoTitle::Demo11_Multiple_Lights;
 	default:
 		Print("Input code to show demo\n");
 		Print("demo1 : pure green show\n");
@@ -103,6 +107,7 @@ DemoTitle CConsole::ConsoleCommand()
 		Print("demo8 : Simple MVP Show\n");
 		Print("demo9 : Simple Phong Show\n");
 		Print("demo10 : Simple Material Show\n");
+		Print("demo11 : Multiple Lights\n");
 		return DemoTitle::Demo0_Zero;
 	}
 	return DemoTitle::Demo0_Zero;
