@@ -13,6 +13,7 @@
 #include "demo9_simple_phong.h"
 #include "demo10_material.h"
 #include "demo11_multiple_lights.h"
+#include "demo12_model_loading.h"
 // 对应每个 demo 的变量
 enum DemoTitle
 {
@@ -28,6 +29,7 @@ enum DemoTitle
 	Demo9_Simple_Phong,
 	Demo10_Material,
 	Demo11_Multiple_Lights,
+	Demo12_Model_Loading,
 };
 
 void DemoInit(DemoTitle demoTitle);

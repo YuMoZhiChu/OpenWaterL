@@ -95,6 +95,10 @@ DemoTitle CConsole::ConsoleCommand()
 		// 第11个demo, 多光源场景
 		Print("-->demo11 show : Multiple Lights\n");
 		return DemoTitle::Demo11_Multiple_Lights;
+	case "demo12"_openwaterl_hash_compile_time:
+		// 第12个demo, 读取 Model
+		Print("-->demo12 show : Model Loading\n");
+		return DemoTitle::Demo12_Model_Loading;
 	default:
 		Print("Input code to show demo\n");
 		Print("demo1 : pure green show\n");
@@ -108,6 +112,7 @@ DemoTitle CConsole::ConsoleCommand()
 		Print("demo9 : Simple Phong Show\n");
 		Print("demo10 : Simple Material Show\n");
 		Print("demo11 : Multiple Lights\n");
+		Print("demo12 : Model Loading\n");
 		return DemoTitle::Demo0_Zero;
 	}
 	return DemoTitle::Demo0_Zero;
