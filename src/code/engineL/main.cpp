@@ -103,17 +103,29 @@ int main()
 	// 选择demo，第一次默认是 0
 	DemoTitle demoTitle = CConsoleInstance().ConsoleCommand();
 
-	//// configure global opengl state
-	//// -----------------------------
-	//glEnable(GL_DEPTH_TEST);
+	// configure global opengl state
+	// -----------------------------
+	// 打开深度测试
+	glEnable(GL_DEPTH_TEST);
+	//// 默认设置，会丢弃深度大于等于当前深度的片段（即后面的
+	//glDepthFunc(GL_LESS);
+	//// 打开模板测试
+	//glEnable(GL_STENCIL_TEST);
+	//// 当模板深度不相等(NOTEQUAL) 1 ，就可以通过并绘制（比较之前的掩码是 0xFF
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	//// 模板测试失败行为 模板测试通过，深度失败行为  两者都通过行为
+	//// 默认是  3 * GL_KEEP
+	//// 这里综合，就是第一次的时候，写入一个深度 1
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	//// build and compile shaders
-	//// -------------------------
-	//Shader ourShader("shader_code/demo12_model_loading.vs", "shader_code/demo12_model_loading.fs");
+	// build and compile shaders
+	// -------------------------
+	Shader shader("shader_code/demo13_depth_stencil_test.vs", "shader_code/demo13_depth_stencil_test.fs");
+	Shader shaderSingleColor("shader_code/demo13_depth_stencil_test.vs", "shader_code/demo13_depth_stencil_test_single_color.fs");
 
-	//// load models
-	//// -----------
-	//Model ourModel("model/nanosuit/nanosuit.obj");
+	// load models
+	// -----------
+	Model ourModel("model/cube/cube.fbx");
 
 	// render loop
 	// -----------
@@ -132,6 +144,33 @@ int main()
 		// 处理控制台输入
 		processInput(window);
 
+		// render
+		// ------
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // don't forget to clear the stencil buffer!
+
+		// set uniforms
+		shader.use();
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		// 缩放, 因为 FBX 导出的单位是 100 倍
+		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// it's a bit too big for our scene, so scale it down
+		glm::mat4 view = GlobalCameraInstance().Ptr->GetViewMatrix();
+		glm::mat4 projection = glm::perspective(glm::radians(GlobalCameraInstance().Ptr->Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+		shader.setMat4("model", model);
+		ourModel.Draw(shader);
+
+
+		//shader.use();
+		//shader.setMat4("view", view);
+		//shader.setMat4("projection", projection);
+
+		//// render the loaded model
+		//shaderSingleColor.setMat4("model", model);
+		//ourModel.Draw(shaderSingleColor);
+
 		// 对应 Demo 的渲染
 		DemoTitle temp = CConsoleInstance().ConsoleCommand();
 		if (temp != Demo0_Zero)
@@ -149,7 +188,7 @@ int main()
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		// 交换颜色缓冲
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(window); 
 		// 检测触发事件
 		glfwPollEvents();
 	}
