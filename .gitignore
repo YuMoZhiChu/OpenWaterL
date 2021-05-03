@@ -35,7 +35,6 @@ glad/
 log/*.txt
 *.sbr
 *.sdf
-obj/
 [Rr]elease/
 [Rr]elease.win32/
 _ReSharper*/
@@ -53,7 +52,6 @@ BundleArtifacts
 # Ignore files build by ndk and eclipse
 /libs/
 bin/
-obj/
 gen/
 assets/
 local.properties
