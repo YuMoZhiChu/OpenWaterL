@@ -125,7 +125,7 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("model/cube/cube.fbx");
+	Model ourModel("model/JiaRan/JiaRan.pmx");
 
 	// render loop
 	// -----------
